@@ -29,6 +29,6 @@ link_directories(${E2SAR_LIBRARY_DIRS})
 message(STATUS "E2SAR_INCLUDE_DIRS: ${E2SAR_INCLUDE_DIRS}")
 message(STATUS "E2SAR_LIBRARY_DIRS: ${E2SAR_LIBRARY_DIRS}")
 
-add_library(ersapSegmentor SHARED src/segmentor_actor.cpp include/segmentor_actor.hpp)
+add_library(ersapSegmentor SHARED include/segmentor_actor.hpp src/segmentor_actor.cpp )
 target_link_libraries(ersapSegmentor Ersap::ersap ${E2SAR_LIBS})
-install(TARGETS ersapSegmentor DESTINATION)
+install(TARGETS ersapSegmentor DESTINATION) 
