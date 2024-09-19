@@ -1,0 +1,16 @@
+---
+io-services:
+  reader:
+    class: FileReaderService
+    name: FileReaderService
+  writer:
+    class: FileWriterService
+    name: FileWriterService
+
+services:
+  - class: segmentor_actor
+    name: segmentor_actor
+    lang: cpp
+
+mime-types:
+  - binary/img-file
