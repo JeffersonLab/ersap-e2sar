@@ -54,12 +54,7 @@ public class FileWriterService extends AbstractEventWriterService<BufferedWriter
 
     @Override
     protected void writeEvent(Object event) throws EventWriterException {
-        try{
-            writer.write(Arrays.toString((byte[])event));
-        }
-        catch(IOException e){
-            e.printStackTrace();
-        }
+        System.out.println("This does nothing");
     }
 
     @Override

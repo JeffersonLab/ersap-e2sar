@@ -5,6 +5,8 @@
 #include <e2sar.hpp>
 
 #include <iostream>
+
+extern "C"
 namespace ersap {
     namespace e2sar {
 
@@ -22,27 +24,54 @@ namespace ersap {
             ~SegmentorService() override = default;
 
         public:
-            ersap::EngineData configure(ersap::EngineData&) override;
+            ersap::EngineData configure(ersap::EngineData& input) {
+                auto config = ersap::stdlib::parse_json(input);
 
-            ersap::EngineData execute(ersap::EngineData&) override;
 
-            ersap::EngineData execute_group(const std::vector<ersap::EngineData>&) override;
+                // TODO: Extract jana_config_file_name from ersap config
+                auto jana_config_file_name = "config.ersap";
+
+                //Need to configure segmentor here
+
+            }
+
+            ersap::EngineData execute(ersap::EngineData& input) {
+                auto output = ersap::EngineData{};
+                return output;
+            }   
+
+            ersap::EngineData execute_group(const std::vector<ersap::EngineData>& inputs) {
+                auto output = ersap::EngineData{};
+                return output;
+            }
 
         public:
-            std::vector<ersap::EngineDataType> input_data_types() const override;
+            std::vector<ersap::EngineDataType> input_data_types() {
+                return { ersap::type::JSON, ersap::type::BYTES };
+            }
 
-            std::vector<ersap::EngineDataType> output_data_types() const override;
+            std::vector<ersap::EngineDataType> output_data_types(){
+                return { ersap::type::JSON, ersap::type::BYTES }; 
+            }
 
             std::set<std::string> states() const override;
 
         public:
-            std::string name() const override;
+            std::string name() {
+                return "segmentor";
+            };
 
-            std::string author() const override;
+            std::string author(){
+                return "Srinivas Sivakumar";
+            }
 
-            std::string description() const override;
+            std::string description(){
+                return  "desc";
+            }
 
-            std::string version() const override;
+            std::string version(){
+                return "0.0.1";
+            }
 
         private:
             // TODO: Use smart pointers here
@@ -52,4 +81,9 @@ namespace ersap {
 
 
     }
+}
+
+std::unique_ptr<ersap::Engine> create_engine()
+{
+    return std::make_unique<ersap::e2sar::SegmentorService>();
 }

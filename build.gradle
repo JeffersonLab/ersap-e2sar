@@ -37,7 +37,7 @@ task installJar(type: Copy) {
     def dest = "$System.env.ERSAP_HOME/lib"
     into dest
     doLast {
-        println "JAR installed to $buildDir/install"
+        println "JAR installed to" + dest
     }
 
     doFirst {

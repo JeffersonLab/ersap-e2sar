@@ -13,4 +13,4 @@ services:
     lang: cpp
 
 mime-types:
-  - binary/img-file
+  - binary/bytes

@@ -12,20 +12,27 @@ import java.io.FileReader;
 
 
 import java.io.IOException;
+import java.nio.charset.Charset;
 import java.nio.ByteOrder;
+import java.nio.ByteBuffer;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 public class FileReaderService extends AbstractEventReaderService<BufferedReader> {
 
+    int count;
     /**
      * Creates a new image reader service.
      */
     public FileReaderService() {
+        count = 0;
     }
 
     @Override
     protected BufferedReader createReader(Path file, JSONObject opts) throws EventReaderException {
         try {
+            System.out.println(file.toString());
+            System.out.println(opts.toString());
+            System.out.flush();
             return new BufferedReader(new FileReader(file.toFile()));
         }
         catch (FileNotFoundException e) {
@@ -44,7 +51,7 @@ public class FileReaderService extends AbstractEventReaderService<BufferedReader
 
     @Override
     protected int readEventCount() throws EventReaderException {
-        return 0;
+        return 1;
     }
 
     @Override
@@ -54,10 +61,14 @@ public class FileReaderService extends AbstractEventReaderService<BufferedReader
 
     @Override
     protected Object readEvent(int eventNumber) throws EventReaderException {
+        System.out.println("Do I enter here?");
         String line;
         try{
             if((line = reader.readLine()) != null){
-                return line.getBytes();
+                count++;
+                System.out.println("This is my text input: " + line);
+                System.out.println("This is my text input in Bytes: " + ByteBuffer.wrap(line.getBytes(Charset.forName("UTF-8"))));
+                return ByteBuffer.wrap(line.getBytes(Charset.forName("UTF-8")));
             }
         }
         catch (IOException e){
