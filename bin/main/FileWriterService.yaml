@@ -1,0 +1,10 @@
+name: FileWriterService
+engine: FileWriterService
+type: java
+
+author: Srinivas Sivakumar
+email: srinivas@jlab.org
+
+version: 0.1
+description:
+  trial

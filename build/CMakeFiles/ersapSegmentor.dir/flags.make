@@ -4,7 +4,7 @@
 # compile CXX with /usr/bin/c++
 CXX_DEFINES = -DersapSegmentor_EXPORTS
 
-CXX_INCLUDES = -I/home/ubuntu/e2sar-install/include -isystem /home/ubuntu/ersap-install/include
+CXX_INCLUDES = -isystem /home/ubuntu/ersap-install/include
 
 CXX_FLAGS = -O2 -g -DNDEBUG -fPIC -std=c++17
 
