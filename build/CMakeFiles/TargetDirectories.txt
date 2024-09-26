@@ -1,7 +1,0 @@
-/home/ubuntu/ERSAP/ersap-e2sar/build/CMakeFiles/ersapSegmentor.dir
-/home/ubuntu/ERSAP/ersap-e2sar/build/CMakeFiles/edit_cache.dir
-/home/ubuntu/ERSAP/ersap-e2sar/build/CMakeFiles/rebuild_cache.dir
-/home/ubuntu/ERSAP/ersap-e2sar/build/CMakeFiles/list_install_components.dir
-/home/ubuntu/ERSAP/ersap-e2sar/build/CMakeFiles/install.dir
-/home/ubuntu/ERSAP/ersap-e2sar/build/CMakeFiles/install/local.dir
-/home/ubuntu/ERSAP/ersap-e2sar/build/CMakeFiles/install/strip.dir
