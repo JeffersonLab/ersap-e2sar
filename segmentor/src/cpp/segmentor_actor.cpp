@@ -35,7 +35,7 @@ namespace ersap {
 
         ersap::EngineData SegmentorService::execute(ersap::EngineData& input) {
             auto output = ersap::EngineData{};
-            // std::cout << input.mime_type() << std::endl;
+            
             if (input.mime_type() != ersap::type::BYTES) {
                 output.set_status(ersap::EngineStatus::ERROR);
                 output.set_description("Wrong input type");
