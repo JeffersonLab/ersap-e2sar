@@ -27,7 +27,9 @@ namespace ersap {
             e2sar::Reassembler::ReassemblerFlags rflags;
             rflags.useCP = useCP; 
             rflags.withLBHeader = true; 
-            reas = std::make_unique<e2sar::Reassembler>(reasUri, 1, rflags);
+            boost::asio::ip::address loopback = boost::asio::ip::make_address("127.0.0.1");
+            u_int16_t listen_port = 10000;
+            reas = std::make_unique<e2sar::Reassembler>(reasUri, loopback, listen_port, 1, rflags);
             return {};
         }
 

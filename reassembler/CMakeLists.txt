@@ -32,14 +32,13 @@ link_directories(${E2SAR_LIBRARY_DIRS})
 message(STATUS "E2SAR_INCLUDE_DIRS: ${E2SAR_INCLUDE_DIRS}")
 message(STATUS "E2SAR_LIBRARY_DIRS: ${E2SAR_LIBRARY_DIRS}")
 message(STATUS "E2SAR linker flags: ${E2SAR_LIBRARIES}")
-message(STATUS "GRPC linker flags: ${GRPC_LINK_LIBRARIES}")
+message(STATUS "GRPC linker flags: ${GRPC_LIBRARIES}")
 message(STATUS "Protobuf linker flags: ${Protobuf_LIBRARIES}")
 
 add_library(ersapReassembler SHARED src/cpp/reassembler_actor.cpp )
-target_link_libraries(ersapReassembler Ersap::ersap /usr/local/lib/x86_64-linux-gnu/libe2sar_t.a ${Boost_LIBRARIES} 
-/usr/local/lib/x86_64-linux-gnu/liblbgrpc.a ${GRPC_LINK_LIBRARIES} ${Protobuf_LIBRARIES}
-Threads::Threads
-)
+target_link_libraries(ersapReassembler Ersap::ersap /usr/local/lib/x86_64-linux-gnu/libe2sar.a 
+${Boost_LIBRARIES} ${GRPC_LIBRARIES} ${Protobuf_LIBRARIES} Threads::Threads)
+
 if (CMAKE_CXX_COMPILER_ID MATCHES Clang)
   target_compile_options(ersapReassembler PRIVATE -Wno-return-type-c-linkage)
 endif()

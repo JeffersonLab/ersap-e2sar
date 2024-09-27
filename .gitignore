@@ -8,3 +8,7 @@
 segmentor/bin/*
 segmentor/.gradle/*
 segmentor/build/*
+
+reassembler/bin/*
+reassembler/.gradle/*
+reassembler/build/*

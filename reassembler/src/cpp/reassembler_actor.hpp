@@ -1,6 +1,7 @@
 #include <ersap/engine.hpp>
 #include <ersap/stdlib/json_utils.hpp>
 #include <ersap/engine_data_type.hpp>
+#include <boost/asio.hpp>
 
 #include <e2sar.hpp>
 
