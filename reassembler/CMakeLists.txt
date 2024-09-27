@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.5.1)
-project(E2SAR_ERSAP_SEGMENTOR CXX)
+project(E2SAR_ERSAP_REASSEMBLER CXX)
 
 if(NOT CMAKE_BUILD_TYPE AND NOT CMAKE_CONFIGURATION_TYPES)
   message(STATUS "No build type selected, default to Release")
@@ -15,7 +15,7 @@ list(APPEND CMAKE_PREFIX_PATH "$ENV{ERSAP_HOME}")
 endif()
 
 find_package(Boost COMPONENTS system url thread chrono random program_options REQUIRED )
-
+find_package(Protobuf REQUIRED)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
@@ -35,12 +35,13 @@ message(STATUS "E2SAR linker flags: ${E2SAR_LIBRARIES}")
 message(STATUS "GRPC linker flags: ${GRPC_LINK_LIBRARIES}")
 message(STATUS "Protobuf linker flags: ${Protobuf_LIBRARIES}")
 
-add_library(ersapSegmentor SHARED src/cpp/segmentor_actor.cpp )
-target_link_libraries(ersapSegmentor Ersap::ersap /usr/local/lib/x86_64-linux-gnu/libe2sar_t.a ${Boost_LIBRARIES} 
+add_library(ersapReassembler SHARED src/cpp/reassembler_actor.cpp )
+target_link_libraries(ersapReassembler Ersap::ersap /usr/local/lib/x86_64-linux-gnu/libe2sar_t.a ${Boost_LIBRARIES} 
 /usr/local/lib/x86_64-linux-gnu/liblbgrpc.a ${GRPC_LINK_LIBRARIES} ${Protobuf_LIBRARIES}
-Threads::Threads)
+Threads::Threads
+)
 if (CMAKE_CXX_COMPILER_ID MATCHES Clang)
-  target_compile_options(ersapSegmentor PRIVATE -Wno-return-type-c-linkage)
+  target_compile_options(ersapReassembler PRIVATE -Wno-return-type-c-linkage)
 endif()
-set_target_properties(ersapSegmentor PROPERTIES OUTPUT_NAME "segmentor_actor")
-install(TARGETS ersapSegmentor DESTINATION "$ENV{ERSAP_HOME}/lib") 
+set_target_properties(ersapReassembler PROPERTIES OUTPUT_NAME "reassembler_actor")
+install(TARGETS ersapReassembler DESTINATION "$ENV{ERSAP_HOME}/lib") 

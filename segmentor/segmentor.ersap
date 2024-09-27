@@ -1,7 +1,0 @@
-set servicesFile services.yaml
-set fileList     files.list
-
-set inputDir     /home/ubuntu/input
-set outputDir    /home/ubuntu/output
-
-run local

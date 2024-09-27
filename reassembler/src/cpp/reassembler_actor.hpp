@@ -11,18 +11,18 @@ namespace ersap {
 
         // class SampaEngine;
 
-        class SegmentorService : public ersap::Engine
+        class ReassemblerService : public ersap::Engine
         {
         public:
-            SegmentorService() = default;
+            ReassemblerService() = default;
 
-            SegmentorService(const SegmentorService&) = delete;
-            SegmentorService& operator=(const SegmentorService&) = delete;
+            ReassemblerService(const ReassemblerService&) = delete;
+            ReassemblerService& operator=(const ReassemblerService&) = delete;
 
-            SegmentorService(SegmentorService&&) = default;
-            SegmentorService& operator=(SegmentorService&&) = default;
+            ReassemblerService(ReassemblerService&&) = default;
+            ReassemblerService& operator=(ReassemblerService&&) = default;
 
-            ~SegmentorService() override = default;
+            ~ReassemblerService() override = default;
 
         public:
             ersap::EngineData configure(ersap::EngineData&) override;
@@ -48,8 +48,8 @@ namespace ersap {
             std::string version() const override;
 
         private:
-            e2sar::Segmenter::SegmenterFlags sflags;
-            std::unique_ptr<e2sar::Segmenter> seg;
+            e2sar::Reassembler::ReassemblerFlags rflags;
+            std::unique_ptr<e2sar::Reassembler> reas;
         };
 
     } // end namespace jana

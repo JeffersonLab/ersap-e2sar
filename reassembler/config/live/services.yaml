@@ -4,13 +4,18 @@ io-services:
     class: FileReaderService
     name: FileReaderService
   writer:
-    class: FileWriterService
-    name: FileWriterService
+    class: DummyWriterService
+    name: DummyWriterService
 
 services:
   - class: segmentor_actor
     name: segmentor_actor
     lang: cpp
+
+configuration:
+  services:
+    segmentor_actor:
+      EJFAT_URI: this is a test to see how I parse stuff
 
 mime-types:
   - binary/bytes

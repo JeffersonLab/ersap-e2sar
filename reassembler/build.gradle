@@ -1,0 +1,50 @@
+plugins {
+    id 'java'
+}
+
+sourceSets {
+    main {
+        java {
+            srcDirs = ['src/main/java']  // Directory for your source files
+        }
+        resources {
+            srcDirs = ['src/main/resources']  // Directory containing your resource files
+        }
+    }
+}
+
+jar {
+    archiveBaseName = 'ersap-e2sar-reassembler'  // Name of your JAR
+    archiveVersion = '1.0.0'           // Version
+}
+
+repositories {
+    mavenCentral()  // For standard dependencies
+    flatDir {
+        dirs "$System.env.ERSAP_HOME/lib"  // Directory where the dependency JAR is located
+    }
+}
+
+dependencies {
+    // Include your local dependency
+    implementation name: 'ersap-java-1.0-SNAPSHOT'  // Replace with the actual name of the JAR (without .jar extension)
+    implementation 'org.json:json:20240303'
+}
+
+// Custom install task to copy the JAR
+task installJar(type: Copy) {
+    from "${buildDir}/libs/${jar.archiveBaseName.get()}-${jar.archiveVersion.get()}.jar"
+    def dest = "$System.env.ERSAP_HOME/lib"
+    into dest
+    doLast {
+        println "JAR installed to" + dest
+    }
+
+    doFirst {
+        if (dest == 'null') {
+            throw new GradleException('ERSAP_HOME not set')
+        }
+    }
+}
+
+installJar.dependsOn build

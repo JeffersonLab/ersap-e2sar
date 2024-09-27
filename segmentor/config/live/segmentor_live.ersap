@@ -1,0 +1,7 @@
+set servicesFile config/live/services.yaml
+set fileList     config/files.list
+
+set inputDir    input
+set outputDir   output
+
+run local

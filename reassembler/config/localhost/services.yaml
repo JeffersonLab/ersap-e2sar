@@ -1,0 +1,24 @@
+---
+io-services:
+  reader:
+    class: BufferSizeReaderService
+    name: BufferSizeReaderService
+  writer:
+    class: FileWriterService
+    name: FileWriterService
+
+services:
+  - class: reassembler_actor
+    name: reassembler_actor
+    lang: cpp
+
+configuration:
+  services:
+    reassembler_actor:
+      EJFAT_URI: ejfat://useless@192.168.100.1:9876/lb/1?sync=192.168.0.1:12345&data=127.0.0.1
+      LB_HEADER: true
+      USE_CP: false
+
+mime-types:
+  - binary/bytes
+  - sint32

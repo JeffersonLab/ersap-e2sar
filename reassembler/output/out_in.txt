@@ -1,0 +1,1 @@
+Event 1: This is a sample input for my ersap-e2sar testEvent 2: This is my second input, hopefully I can read both of them and pass it to the segmenter. This is also a longer input so should get more data frames

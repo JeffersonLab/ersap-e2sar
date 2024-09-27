@@ -7,19 +7,33 @@ namespace ersap {
             // Ersap provides a simple JSON parser to read configuration data
             // and configure the service.
             auto config = ersap::stdlib::parse_json(input);
-            std::cout << "Does this work?" << std::endl;
-            std::cout << config.dump() << std::endl;
+            std::string ejfatURI;
+            int syncPeriodMs,syncPeriods;
+            u_int16_t dataId = 0x0505;
+            u_int32_t eventSrcId = 0x11223344;
+            bool useCP;
+            try{
+                ejfatURI = ersap::stdlib::get_string(config, "EJFAT_URI");
+                syncPeriodMs = ersap::stdlib::get_int(config, "SYNC_PERIOD_MS");
+                syncPeriods = ersap::stdlib::get_int(config, "SYNC_PERIODS");
+                useCP = ersap::stdlib::get_bool(config, "USE_CP");
+                std::cout << "Parsed ejfatURI from config: " << ejfatURI << std::endl;
+            }
+            catch (ersap::stdlib::JsonError){
+                std::cout << "Could not parse config file:" << config.dump() << std::endl;
+                exit(-1);
+            }
+            e2sar::EjfatURI uri(ejfatURI);
+            sflags.syncPeriodMs= syncPeriodMs; // in ms
+            sflags.syncPeriods = syncPeriods; // number of sync periods to use for sync
+            sflags.useCP = useCP; // turn off CP
 
-            
-
-            // TODO: Extract jana_config_file_name from ersap config
-            auto jana_config_file_name = "config.e2sar";
+            seg = std::make_unique<e2sar::Segmenter>(uri, dataId, eventSrcId, sflags);
             return {};
         }
 
 
         ersap::EngineData SegmentorService::execute(ersap::EngineData& input) {
-            std::cout << "I should be processing input here" << std::endl;
             auto output = ersap::EngineData{};
             // std::cout << input.mime_type() << std::endl;
             if (input.mime_type() != ersap::type::BYTES) {
@@ -27,69 +41,41 @@ namespace ersap {
                 output.set_description("Wrong input type");
                 return output;
             }
-            else{
-                std::cout << input.mime_type() << std::endl;
-            }
-            std::cout << input.data().type().name() << std::endl;
+
             auto& event_input = ersap::data_cast<std::vector<std::uint8_t>>(input);
 
-            std::string segUriString{"ejfat://useless@192.168.100.1:9876/lb/1?sync=192.168.254.1:12345&data=10.250.100.123"};
-            e2sar::EjfatURI uri(segUriString);
-
-            u_int16_t dataId = 0x0505;
-            u_int32_t eventSrcId = 0x11223344;
-            e2sar::Segmenter::SegmenterFlags sflags;
-            sflags.syncPeriodMs = 1000; // in ms
-            sflags.syncPeriods = 5; // number of sync periods to use for sync
-
-            std::cout << "Running data test for 10 seconds against sync " << 
-                uri.get_syncAddr().value().first << ":" << 
-                uri.get_syncAddr().value().second << " and data " <<
-                uri.get_dataAddrv4().value().first << ":" <<
-                uri.get_dataAddrv4().value().second << 
-                std::endl;
-
-            // create a segmenter and start the threads
-            e2sar::Segmenter seg(uri, dataId, eventSrcId, sflags);
-
-            auto res = seg.openAndStart();
+            auto res = seg->openAndStart();
 
             if (res.has_error())
                 std::cout << "Error encountered opening sockets and starting threads: " << res.error().message() << std::endl;
-            output.set_data(ersap::type::BYTES, input.data());
+            
             std::string eventString(event_input.begin(), event_input.end());
-            std::cout << "The event data is string '" << eventString << "' of length " << eventString.length() << std::endl;
             //
             // send one event message per 2 seconds that fits into a single frame using event queue
             //
-            auto sendStats = seg.getSendStats();
+            auto sendStats = seg->getSendStats();
             if (sendStats.get<1>() != 0) 
             {
                 std::cout << "Error encountered after opening send socket: " << strerror(sendStats.get<2>()) << std::endl;
             }
-            for(auto i=0; i<5;i++) {
-                auto sendres = seg.addToSendQueue(event_input.data(), event_input.size());
-                sendStats = seg.getSendStats();
-                if (sendStats.get<1>() != 0) 
-                {
-                    std::cout << "Error encountered sending event frames: " << strerror(sendStats.get<2>()) << std::endl;
-                }               
-                // sleep for a second
-                boost::this_thread::sleep_for(boost::chrono::seconds(2));
+
+            auto sendres = seg->addToSendQueue(reinterpret_cast<u_int8_t*>(eventString.data()), eventString.length());
+            sendStats = seg->getSendStats();
+
+            //sleep for a second to allow send.
+            boost::this_thread::sleep_for(boost::chrono::seconds(2));
+
+
+            if (sendStats.get<1>() != 0) 
+            {
+                std::cout << "Error encountered sending event frames: " << strerror(sendStats.get<2>()) << std::endl;
             }
 
             // check the sync stats
-            auto syncStats = seg.getSyncStats();
-            sendStats = seg.getSendStats();
+            auto syncStats = seg->getSyncStats();
+            sendStats = seg->getSendStats();
 
-            if (syncStats.get<1>() != 0) 
-            {
-                std::cout << "Error encountered sending sync frames: " << strerror(syncStats.get<2>()) << std::endl;
-            }
-            // send 10 sync messages and no errors
             std::cout << "Sent " << syncStats.get<0>() << " sync frames" << std::endl;
-
-            // check the send stats
             std::cout << "Sent " << sendStats.get<0>() << " data frames" << std::endl;
 
             output.set_data(ersap::type::BYTES, input.data());
@@ -99,9 +85,13 @@ namespace ersap {
 
         ersap::EngineData SegmentorService::execute_group(const std::vector<ersap::EngineData>& inputs)
         {
-
+            std::vector<std::vector<uint8_t>> byteOutput;
             auto output = ersap::EngineData{};
-            output.set_data(ersap::type::BYTES, NULL);
+            for(auto input : inputs){
+                auto res = execute(input);
+                byteOutput.push_back(ersap::data_cast<std::vector<std::uint8_t>>(res));
+            }
+            output.set_data(ersap::type::BYTES, byteOutput.data());
             return output;
         }
 
@@ -149,7 +139,6 @@ namespace ersap {
         {
             return "0.1";
         }
-
     }
 }
 

@@ -1,0 +1,24 @@
+---
+io-services:
+  reader:
+    class: FileReaderService
+    name: FileReaderService
+  writer:
+    class: DummyWriterService
+    name: DummyWriterService
+
+services:
+  - class: segmentor_actor
+    name: segmentor_actor
+    lang: cpp
+
+configuration:
+  services:
+    segmentor_actor:
+      EJFAT_URI: ejfat://useless@192.168.100.1:9876/lb/1?sync=192.168.0.1:12345&data=127.0.0.1
+      SYNC_PERIOD_MS: 1000
+      SYNC_PERIODS: 5
+      USE_CP: false
+
+mime-types:
+  - binary/bytes

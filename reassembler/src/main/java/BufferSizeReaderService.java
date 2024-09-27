@@ -17,30 +17,20 @@ import java.nio.ByteOrder;
 import java.nio.ByteBuffer;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-public class FileReaderService extends AbstractEventReaderService<BufferedReader> {
+public class BufferSizeReaderService extends AbstractEventReaderService<BufferedReader> {
 
     int count;
     /**
      * Creates a new image reader service.
      */
-    public FileReaderService() {
+    public BufferSizeReaderService() {
         count = 0;
     }
 
     @Override
     protected BufferedReader createReader(Path file, JSONObject opts) throws EventReaderException {
         try {
-            BufferedReader fileReader = new BufferedReader(new FileReader(file.toFile()));
-            try{
-                String line;
-                if((line= fileReader.readLine()) != null){
-                    count = Integer.parseInt(line);
-                }
-            }
-            catch (IOException e){
-                throw new EventReaderException("Could not create reader, first input of file should be count of events", e);
-            }
-            return fileReader;
+            return new BufferedReader(new FileReader(file.toFile()));
         }
         catch (FileNotFoundException e) {
             throw new EventReaderException("Could not create reader", e);
@@ -58,7 +48,7 @@ public class FileReaderService extends AbstractEventReaderService<BufferedReader
 
     @Override
     protected int readEventCount() throws EventReaderException {
-        return count;
+        return 1;//Only one event started this should be modified
     }
 
     @Override
@@ -71,7 +61,7 @@ public class FileReaderService extends AbstractEventReaderService<BufferedReader
         String line;
         try{
             if((line = reader.readLine()) != null){
-                return ByteBuffer.wrap(line.getBytes(Charset.forName("UTF-8")));
+                return Integer.parseInt(line);//First line of input file is the number of lines. So for this example the bufferSize will be that
             }
         }
         catch (IOException e){
@@ -82,6 +72,6 @@ public class FileReaderService extends AbstractEventReaderService<BufferedReader
 
     @Override
     protected EngineDataType getDataType() {
-        return EngineDataType.BYTES;
+        return EngineDataType.SINT32;
     }
 }
