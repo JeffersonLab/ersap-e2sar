@@ -1,7 +1,8 @@
 #include <ersap/engine.hpp>
 #include <ersap/stdlib/json_utils.hpp>
 #include <ersap/engine_data_type.hpp>
-
+#include <boost/property_tree/ptree.hpp>
+#include <boost/property_tree/ini_parser.hpp>
 #include <e2sar.hpp>
 
 #include <iostream>
@@ -48,7 +49,6 @@ namespace ersap {
             std::string version() const override;
 
         private:
-            e2sar::Segmenter::SegmenterFlags sflags;
             std::unique_ptr<e2sar::Segmenter> seg;
         };
 

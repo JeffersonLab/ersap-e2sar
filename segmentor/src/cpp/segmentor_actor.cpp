@@ -7,26 +7,24 @@ namespace ersap {
             // Ersap provides a simple JSON parser to read configuration data
             // and configure the service.
             auto config = ersap::stdlib::parse_json(input);
-            std::string ejfatURI;
-            int syncPeriodMs,syncPeriods;
+            std::string iniFile;
             u_int16_t dataId = 0x0505;
             u_int32_t eventSrcId = 0x11223344;
-            bool useCP;
             try{
-                ejfatURI = ersap::stdlib::get_string(config, "EJFAT_URI");
-                syncPeriodMs = ersap::stdlib::get_int(config, "SYNC_PERIOD_MS");
-                syncPeriods = ersap::stdlib::get_int(config, "SYNC_PERIODS");
-                useCP = ersap::stdlib::get_bool(config, "USE_CP");
-                std::cout << "Parsed ejfatURI from config: " << ejfatURI << std::endl;
+                iniFile = ersap::stdlib::get_string(config, "INI_FILE");
             }
             catch (ersap::stdlib::JsonError){
                 std::cout << "Could not parse config file:" << config.dump() << std::endl;
                 exit(-1);
             }
+            auto res = e2sar::Segmenter::SegmenterFlags::getFromINI(iniFile);
+            e2sar::Segmenter::SegmenterFlags sflags = res.value();
+
+            boost::property_tree::ptree paramTree;
+            boost::property_tree::ini_parser::read_ini(iniFile, paramTree);
+
+            std::string ejfatURI = paramTree.get<std::string>("lb-config.ejfatUri", "ejfaturi");
             e2sar::EjfatURI uri(ejfatURI);
-            sflags.syncPeriodMs= syncPeriodMs; // in ms
-            sflags.syncPeriods = syncPeriods; // number of sync periods to use for sync
-            sflags.useCP = useCP; // turn off CP
 
             seg = std::make_unique<e2sar::Segmenter>(uri, dataId, eventSrcId, sflags);
             return {};

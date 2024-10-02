@@ -9,26 +9,29 @@ namespace ersap {
             // and configure the service.
             auto config = ersap::stdlib::parse_json(input);
 
-            std::string ejfatURI;
-            bool useCP; 
-            bool withLBHeader; 
+            std::string iniFile;
 
             try{
-                ejfatURI = ersap::stdlib::get_string(config, "EJFAT_URI");
-                useCP = ersap::stdlib::get_bool(config, "USE_CP");
-                withLBHeader = ersap::stdlib::get_bool(config, "LB_HEADER");
-                std::cout << "Parsed ejfatURI from config: " << ejfatURI << std::endl;
+                iniFile = ersap::stdlib::get_string(config, "INI_FILE");
             }
             catch (ersap::stdlib::JsonError){
                 std::cout << "Could not parse config file:" << config.dump() << std::endl;
                 exit(-1);
             }
+
+            auto res = e2sar::Reassembler::ReassemblerFlags::getFromINI(iniFile);
+            e2sar::Reassembler::ReassemblerFlags rflags = res.value();
+            
+            boost::property_tree::ptree paramTree;
+            boost::property_tree::ini_parser::read_ini(iniFile, paramTree);
+            std::cout << paramTree.get<std::string>("lb-config.ejfatUri", "ejfaturi") << std::endl;
+            
+            std::string ejfatURI = paramTree.get<std::string>("lb-config.ejfatUri", "");
+            std::string ipAddress = paramTree.get<std::string>("lb-config.ip", "");
+            u_int16_t listen_port = paramTree.get<u_int16_t>("lb-config.port", 0);
             e2sar::EjfatURI reasUri(ejfatURI, e2sar::EjfatURI::TokenType::instance);
-            e2sar::Reassembler::ReassemblerFlags rflags;
-            rflags.useCP = useCP; 
-            rflags.withLBHeader = true; 
-            boost::asio::ip::address loopback = boost::asio::ip::make_address("127.0.0.1");
-            u_int16_t listen_port = 10000;
+
+            boost::asio::ip::address loopback = boost::asio::ip::make_address(ipAddress);
             reas = std::make_unique<e2sar::Reassembler>(reasUri, loopback, listen_port, 1, rflags);
             return {};
         }

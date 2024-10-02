@@ -15,7 +15,7 @@ services:
 configuration:
   services:
     segmentor_actor:
-      EJFAT_URI: this is a test to see how I parse stuff
+      INI_FILE: config/live/segmentor.uri
 
 mime-types:
   - binary/bytes

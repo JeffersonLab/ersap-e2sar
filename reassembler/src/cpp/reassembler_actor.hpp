@@ -2,6 +2,8 @@
 #include <ersap/stdlib/json_utils.hpp>
 #include <ersap/engine_data_type.hpp>
 #include <boost/asio.hpp>
+#include <boost/property_tree/ptree.hpp>
+#include <boost/property_tree/ini_parser.hpp>
 
 #include <e2sar.hpp>
 

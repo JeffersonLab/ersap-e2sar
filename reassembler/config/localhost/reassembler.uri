@@ -1,0 +1,33 @@
+[general]
+; whether to use the control plane (gRPC sendState, registerWorker)
+useCP = false
+
+[control-plane]
+; validate control plane TLS certificate in gRPC communications
+validateCert = false
+; force using address (v4 or v6) even if hostname specified in the URI
+useHostAddress = false
+
+[data-plane]
+; 2^portRange (0<=portRange<=14) listening ports will be open starting from dataPort. 
+; If -1, then the number of ports matches either the number of CPU cores or the number of threads. Normally
+; this value is calculated based on the number of cores or threads requested, but
+; it can be overridden here. Use with caution.
+portRange = -1
+; expect LB header to be included (mainly for testing when withCP==false, 
+; as normally LB strips it off in normal operation)
+withLBHeader = true
+; how long (in ms) we allow events to remain in assembly before we give up
+eventTimeoutMS = 500
+; socket buffer size for receiving set via SO_RCVBUF setsockopt. Note
+; that this requires systemwide max set via sysctl (net.core.rmem_max) to be higher.
+rcvSocketBufSize = 3145728
+; period of one epoch in milliseconds
+epochMS = 1000
+; period of the send state thread in milliseconds
+periodMS = 100
+
+[lb-config]
+ejfatUri = ejfat://useless@192.168.100.1:9876/lb/1?sync=192.168.0.1:12345&data=127.0.0.1
+ip = 127.0.0.1
+port = 10000

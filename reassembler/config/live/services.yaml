@@ -15,6 +15,7 @@ services:
 configuration:
   services:
     segmentor_actor:
+      INI_FILE: config/live/reassembler.uri
       EJFAT_URI: this is a test to see how I parse stuff
 
 mime-types:
