@@ -30,10 +30,18 @@ public class BufferSizeReaderService extends AbstractEventReaderService<Buffered
     @Override
     protected BufferedReader createReader(Path file, JSONObject opts) throws EventReaderException {
         try {
-            return new BufferedReader(new FileReader(file.toFile()));
+            BufferedReader FileReader =  new BufferedReader(new FileReader(file.toFile()));
+            String line;    
+            if((line = FileReader.readLine()) != null){
+                count =  Integer.parseInt(line);//First line of input file is the number of lines. So for this example the bufferSize will be that
+            }
+            return FileReader;
         }
         catch (FileNotFoundException e) {
             throw new EventReaderException("Could not create reader", e);
+        }
+        catch (IOException e){
+            throw new EventReaderException("Unable to read file, e");
         }
     }
 
@@ -48,7 +56,7 @@ public class BufferSizeReaderService extends AbstractEventReaderService<Buffered
 
     @Override
     protected int readEventCount() throws EventReaderException {
-        return 1;//Only one event started this should be modified
+        return count;//Only one event started this should be modified
     }
 
     @Override
@@ -59,15 +67,7 @@ public class BufferSizeReaderService extends AbstractEventReaderService<Buffered
     @Override
     protected Object readEvent(int eventNumber) throws EventReaderException {
         String line;
-        try{
-            if((line = reader.readLine()) != null){
-                return Integer.parseInt(line);//First line of input file is the number of lines. So for this example the bufferSize will be that
-            }
-        }
-        catch (IOException e){
-            e.printStackTrace();
-        }
-        return null;
+        return 1;
     }
 
     @Override

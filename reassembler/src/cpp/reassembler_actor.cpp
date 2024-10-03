@@ -62,20 +62,17 @@ namespace ersap {
             e2sar::EventNum_t eventNum;
             u_int16_t recDataId;
 
-            // receive data from the queue
-            for(auto i = 0; i < buffer_len; i++)
-            {
-                auto recvres = reas->recvEvent(&eventBuf, &eventLen, &eventNum, &recDataId, 10000);
-                if (recvres.has_error())
-                    std::cout << "Error encountered receiving event frames " << std::endl;
-                if (recvres.value() == -1)
-                    std::cout << "No message received, continuing" << std::endl;
-                else{
-                    std::cout << "Received message: " << reinterpret_cast<char*>(eventBuf) << " of length " << eventLen << " with event number " << eventNum << " and data id " << recDataId << std::endl;
-                    output_events.insert(output_events.end(),eventBuf,eventBuf+eventLen);
-                }
-                    
+            
+            auto recvres = reas->recvEvent(&eventBuf, &eventLen, &eventNum, &recDataId, 10000);
+            if (recvres.has_error())
+                std::cout << "Error encountered receiving event frames " << std::endl;
+            if (recvres.value() == -1)
+                std::cout << "No message received, continuing" << std::endl;
+            else{
+                std::cout << "Received message: " << reinterpret_cast<char*>(eventBuf) << " of length " << eventLen << " with event number " << eventNum << " and data id " << recDataId << std::endl;
+                output_events = std::vector<uint8_t>(eventBuf,eventBuf+eventLen);
             }
+            
             
             output.set_data(ersap::type::BYTES, output_events);
             return output;
