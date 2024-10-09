@@ -8,8 +8,8 @@ namespace ersap {
             // and configure the service.
             auto config = ersap::stdlib::parse_json(input);
             std::string iniFile;
-            u_int16_t dataId = 0x0505;
-            u_int32_t eventSrcId = 0x11223344;
+            u_int16_t dataId = 5555;
+            u_int32_t eventSrcId = 7777;
             try{
                 iniFile = ersap::stdlib::get_string(config, "INI_FILE");
             }
@@ -20,14 +20,42 @@ namespace ersap {
             auto res = e2sar::Segmenter::SegmenterFlags::getFromINI(iniFile);
             e2sar::Segmenter::SegmenterFlags sflags = res.value();
 
-            boost::property_tree::ptree paramTree;
-            boost::property_tree::ini_parser::read_ini(iniFile, paramTree);
+            boost::property_tree::ptree param_tree;
+            boost::property_tree::ini_parser::read_ini(iniFile, param_tree);
+            
 
-            std::string ejfatURI = paramTree.get<std::string>("lb-config.ejfatUri", "ejfaturi");
+            if(sflags.useCP){
+                addSender(param_tree);
+            }
+
+            std::string ejfatURI = param_tree.get<std::string>("lb-config.ejfatUri", "ejfaturi");
             e2sar::EjfatURI uri(ejfatURI);
+
+            std::cout << "EJFAT_URI = " << ejfatURI << std::endl;
 
             seg = std::make_unique<e2sar::Segmenter>(uri, dataId, eventSrcId, sflags);
             return {};
+        }
+
+        void SegmentorService::addSender(boost::property_tree::ptree param_tree){
+            std::string ip = param_tree.get<std::string>("lb-config.senderIP", "127.0.0.1");
+            bool validate = param_tree.get<bool>("lb-config.validate", true);
+            bool preferHostAddress = param_tree.get<bool>("lb-config.preferHostAddress", false);
+
+            e2sar::LBManager lbman(ip, validate, preferHostAddress);
+            std::cout << "Adding senders to LB: ";
+            std::vector<std::string> senders;
+            senders.push_back(ip);  
+            for (auto s: senders)
+                std::cout << ip << " ";
+            std::cout << std::endl;
+            auto addres = lbman.addSenders(senders);
+            if (addres.has_error()) 
+            {
+                std::cerr << "Unable to add a sender due to error " << addres.error().message() 
+                    << ", exiting" << std::endl;
+                exit(-1);
+            }
         }
 
 

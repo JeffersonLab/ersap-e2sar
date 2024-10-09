@@ -34,6 +34,7 @@ public class BufferSizeReaderService extends AbstractEventReaderService<Buffered
             String line;    
             if((line = FileReader.readLine()) != null){
                 count =  Integer.parseInt(line);//First line of input file is the number of lines. So for this example the bufferSize will be that
+                System.out.println("Count should be = " + count);
             }
             return FileReader;
         }
@@ -66,7 +67,9 @@ public class BufferSizeReaderService extends AbstractEventReaderService<Buffered
 
     @Override
     protected Object readEvent(int eventNumber) throws EventReaderException {
-        String line;
+        if(eventNumber == 1){
+            return 0;
+        }
         return 1;
     }
 

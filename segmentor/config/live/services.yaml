@@ -15,7 +15,7 @@ services:
 configuration:
   services:
     segmentor_actor:
-      INI_FILE: config/live/segmentor.uri
+      INI_FILE: config/live/segmentor.ini
 
 mime-types:
   - binary/bytes

@@ -51,7 +51,7 @@ namespace ersap {
             std::string version() const override;
 
         private:
-            e2sar::Reassembler::ReassemblerFlags rflags;
+            void registerWorker(boost::property_tree::ptree);
             std::unique_ptr<e2sar::Reassembler> reas;
         };
 

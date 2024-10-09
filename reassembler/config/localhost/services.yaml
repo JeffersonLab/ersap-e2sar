@@ -15,10 +15,7 @@ services:
 configuration:
   services:
     reassembler_actor:
-      INI_FILE: config/localhost/reassembler.uri
-      EJFAT_URI: ejfat://useless@192.168.100.1:9876/lb/1?sync=192.168.0.1:12345&data=127.0.0.1
-      LB_HEADER: true
-      USE_CP: false
+      INI_FILE: config/localhost/reassembler.ini
 
 mime-types:
   - binary/bytes

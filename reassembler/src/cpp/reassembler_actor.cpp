@@ -22,20 +22,53 @@ namespace ersap {
             auto res = e2sar::Reassembler::ReassemblerFlags::getFromINI(iniFile);
             e2sar::Reassembler::ReassemblerFlags rflags = res.value();
             
-            boost::property_tree::ptree paramTree;
-            boost::property_tree::ini_parser::read_ini(iniFile, paramTree);
-            std::cout << paramTree.get<std::string>("lb-config.ejfatUri", "ejfaturi") << std::endl;
+            boost::property_tree::ptree param_tree;
+            boost::property_tree::ini_parser::read_ini(iniFile, param_tree);
             
-            std::string ejfatURI = paramTree.get<std::string>("lb-config.ejfatUri", "");
-            std::string ipAddress = paramTree.get<std::string>("lb-config.ip", "");
-            u_int16_t listen_port = paramTree.get<u_int16_t>("lb-config.port", 0);
+            std::cout << param_tree.get<std::string>("lb-config.ejfatUri", "ejfaturi") << std::endl;
+            
+            std::string ejfatURI = param_tree.get<std::string>("lb-config.ejfatUri", "");
+            std::string ipAddress = param_tree.get<std::string>("lb-config.ip", "127.0.0.1");
+            u_int16_t listen_port = param_tree.get<u_int16_t>("lb-config.port", 10000);
             e2sar::EjfatURI reasUri(ejfatURI, e2sar::EjfatURI::TokenType::instance);
 
-            boost::asio::ip::address loopback = boost::asio::ip::make_address(ipAddress);
-            reas = std::make_unique<e2sar::Reassembler>(reasUri, loopback, listen_port, 1, rflags);
+            boost::asio::ip::address recv_ip = boost::asio::ip::make_address(ipAddress);
+            reas = std::make_unique<e2sar::Reassembler>(reasUri, recv_ip, listen_port, 1, rflags);
+
+            std::cout << "EJFAT_URI = " << ejfatURI << std::endl;
+            std::cout << "ipAddress = " << ipAddress << std::endl;
+            std::cout << "listen_port = " << listen_port << std::endl;
+
+            if(rflags.useCP){
+                registerWorker(param_tree);
+            }
+            auto res2 = reas->openAndStart();
+            if (res2.has_error()){
+                std::cout << "Error encountered opening sockets and starting reassembler threads: " << res2.error().message() << std::endl;
+                exit(-1);
+            }
             return {};
         }
 
+        void ReassemblerService::registerWorker(boost::property_tree::ptree param_tree){
+            auto hostname_res = e2sar::NetUtil::getHostName();
+            if (hostname_res.has_error()) 
+            {   
+                std::cout << "Could not resolve hostName" << hostname_res.error().code() << hostname_res.error().message() << std::endl;
+                exit(-1);
+            }
+            auto regres = reas->registerWorker(hostname_res.value());
+            if (regres.has_error())
+            {
+                std:: cout << "Unable to register worker node due to " << regres.error().message() << std::endl;
+                exit(-1);
+            }
+            if (regres.value() == 1)
+                std::cout << "Registered the worker" << std::endl;
+            std::cout << "This reassembler has " << reas->get_numRecvThreads() << " receive threads and is listening on ports " << 
+                reas->get_recvPorts().first << ":" << reas->get_recvPorts().second << " using portRange " << reas->get_portRange() << 
+                std::endl;
+        }
 
         ersap::EngineData ReassemblerService::execute(ersap::EngineData& input) {
             auto output = ersap::EngineData{};
@@ -45,25 +78,21 @@ namespace ersap {
                 output.set_description("Wrong input type");
                 return output;
             }
-            auto& buffer_len = ersap::data_cast<std::int32_t>(input);
-            std::string reasUriString{"ejfat://useless@192.168.100.1:9876/lb/1?sync=192.168.0.1:12345&data=127.0.0.1"};
+            auto& event_type = ersap::data_cast<std::int32_t>(input);
             std::vector<uint8_t> output_events;
 
-            std::cout << "This reassembler has " << reas->get_numRecvThreads() << " receive threads and is listening on ports " << 
-                reas->get_recvPorts().first << ":" << reas->get_recvPorts().second << " using portRange " << reas->get_portRange() << 
-                std::endl;
-
-            auto res2 = reas->openAndStart();
-            if (res2.has_error())
-                std::cout << "Error encountered opening sockets and starting reassembler threads: " << res2.error().message() << std::endl;
 
             u_int8_t *eventBuf{nullptr};
             size_t eventLen;
             e2sar::EventNum_t eventNum;
             u_int16_t recDataId;
 
+            uint16_t timeout = 10000;
+            if(event_type)
+                timeout = 1000;
+
             
-            auto recvres = reas->recvEvent(&eventBuf, &eventLen, &eventNum, &recDataId, 10000);
+            auto recvres = reas->recvEvent(&eventBuf, &eventLen, &eventNum, &recDataId, timeout);
             if (recvres.has_error())
                 std::cout << "Error encountered receiving event frames " << std::endl;
             if (recvres.value() == -1)
