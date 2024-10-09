@@ -24,24 +24,32 @@ namespace ersap {
             
             boost::property_tree::ptree param_tree;
             boost::property_tree::ini_parser::read_ini(iniFile, param_tree);
-            
-            std::cout << param_tree.get<std::string>("lb-config.ejfatUri", "ejfaturi") << std::endl;
-            
+
             std::string ejfatURI = param_tree.get<std::string>("lb-config.ejfatUri", "");
             std::string ipAddress = param_tree.get<std::string>("lb-config.ip", "127.0.0.1");
             u_int16_t listen_port = param_tree.get<u_int16_t>("lb-config.port", 10000);
-            e2sar::EjfatURI reasUri(ejfatURI, e2sar::EjfatURI::TokenType::instance);
-
-            boost::asio::ip::address recv_ip = boost::asio::ip::make_address(ipAddress);
-            reas = std::make_unique<e2sar::Reassembler>(reasUri, recv_ip, listen_port, 1, rflags);
-
             std::cout << "EJFAT_URI = " << ejfatURI << std::endl;
             std::cout << "ipAddress = " << ipAddress << std::endl;
             std::cout << "listen_port = " << listen_port << std::endl;
 
+            e2sar::EjfatURI reasUri(ejfatURI, e2sar::EjfatURI::TokenType::instance);
+
+
+            
+
             if(rflags.useCP){
-                registerWorker(param_tree);
+                try{
+                    boost::asio::ip::address recv_ip = boost::asio::ip::make_address(ipAddress);
+                    reas = std::make_unique<e2sar::Reassembler>(reasUri, recv_ip, listen_port, 1, rflags);
+                    registerWorker(param_tree);
+                }
+                catch(e2sar::E2SARException e){
+                    std::string errorMsg = e;
+                    std::cout << errorMsg << std::endl;
+                    exit(-1);
+                }
             }
+            std::cout << "After registering" << std::endl;
             auto res2 = reas->openAndStart();
             if (res2.has_error()){
                 std::cout << "Error encountered opening sockets and starting reassembler threads: " << res2.error().message() << std::endl;
@@ -57,6 +65,7 @@ namespace ersap {
                 std::cout << "Could not resolve hostName" << hostname_res.error().code() << hostname_res.error().message() << std::endl;
                 exit(-1);
             }
+            std::cout << "Hostname = " << hostname_res.value() << std::endl;
             auto regres = reas->registerWorker(hostname_res.value());
             if (regres.has_error())
             {
@@ -65,6 +74,7 @@ namespace ersap {
             }
             if (regres.value() == 1)
                 std::cout << "Registered the worker" << std::endl;
+
             std::cout << "This reassembler has " << reas->get_numRecvThreads() << " receive threads and is listening on ports " << 
                 reas->get_recvPorts().first << ":" << reas->get_recvPorts().second << " using portRange " << reas->get_portRange() << 
                 std::endl;

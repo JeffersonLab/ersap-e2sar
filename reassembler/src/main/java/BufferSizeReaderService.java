@@ -67,7 +67,7 @@ public class BufferSizeReaderService extends AbstractEventReaderService<Buffered
 
     @Override
     protected Object readEvent(int eventNumber) throws EventReaderException {
-        if(eventNumber == 1){
+        if(eventNumber == 0){
             return 0;
         }
         return 1;
