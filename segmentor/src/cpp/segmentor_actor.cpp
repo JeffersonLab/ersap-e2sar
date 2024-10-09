@@ -29,7 +29,7 @@ namespace ersap {
             }
 
             std::string ejfatURI = param_tree.get<std::string>("lb-config.ejfatUri", "ejfaturi");
-            e2sar::EjfatURI uri(ejfatURI);
+            e2sar::EjfatURI uri(ejfatURI, e2sar::EjfatURI::TokenType::instance);
 
             std::cout << "EJFAT_URI = " << ejfatURI << std::endl;
 
@@ -38,11 +38,18 @@ namespace ersap {
         }
 
         void SegmentorService::addSender(boost::property_tree::ptree param_tree){
+            std::string ejfatURI = param_tree.get<std::string>("lb-config.ejfatUri", "ejfaturi");
+            e2sar::EjfatURI uri(ejfatURI, e2sar::EjfatURI::TokenType::instance);
             std::string ip = param_tree.get<std::string>("lb-config.senderIP", "127.0.0.1");
             bool validate = param_tree.get<bool>("lb-config.validate", true);
             bool preferHostAddress = param_tree.get<bool>("lb-config.preferHostAddress", false);
 
-            e2sar::LBManager lbman(ip, validate, preferHostAddress);
+            std::cout << "EJFAT_URI = " << ejfatURI << std::endl;
+            std::cout << "ipAddress = " << ip << std::endl;
+            std::cout << "validate = " << validate << std::endl;
+            std::cout << "preferHostAddress = " << preferHostAddress << std::endl;
+
+            e2sar::LBManager lbman(uri, validate, preferHostAddress);
             std::cout << "Adding senders to LB: ";
             std::vector<std::string> senders;
             senders.push_back(ip);  
