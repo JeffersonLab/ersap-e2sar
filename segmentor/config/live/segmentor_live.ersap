@@ -1,4 +1,4 @@
-set servicesFile config/live/services.yaml
+set servicesFile config/live/byte_services.yaml
 set fileList     config/files.list
 
 set inputDir    input
