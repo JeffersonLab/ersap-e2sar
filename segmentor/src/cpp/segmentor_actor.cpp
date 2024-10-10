@@ -104,13 +104,6 @@ namespace ersap {
                 std::cout << "Error encountered sending event frames: " << strerror(sendStats.get<2>()) << std::endl;
             }
 
-            // check the sync stats
-            auto syncStats = seg->getSyncStats();
-            sendStats = seg->getSendStats();
-
-            std::cout << "Sent " << syncStats.get<0>() << " sync frames" << std::endl;
-            std::cout << "Sent " << sendStats.get<0>() << " data frames" << std::endl;
-
             output.set_data(ersap::type::BYTES, input.data());
             return output;
         }
@@ -171,6 +164,15 @@ namespace ersap {
         std::string SegmentorService::version() const
         {
             return "0.1";
+        }
+
+        SegmentorService::~SegmentorService(){
+            // check the sync stats
+            auto syncStats = seg->getSyncStats();
+            auto sendStats = seg->getSendStats();
+
+            std::cout << "Sent " << syncStats.get<0>() << " sync frames" << std::endl;
+            std::cout << "Sent " << sendStats.get<0>() << " data frames" << std::endl;
         }
     }
 }

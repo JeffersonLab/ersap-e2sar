@@ -69,9 +69,11 @@ public class ByteBufferInputService extends AbstractEventReaderService<BufferedR
 
     @Override
     protected Object readEvent(int eventNumber) throws EventReaderException {
-        ByteBuffer buffer = ByteBuffer.allocateDirect(eventSize);
-        buffer.put(0, startEvent);
-        buffer.put(buffer.capacity() - (endEvent.length + 1), endEvent);
+        ByteBuffer buffer = ByteBuffer.allocate(eventSize);
+        buffer.position(0);
+        buffer.put(startEvent);
+        buffer.position(buffer.capacity() - (endEvent.length + 1));
+        buffer.put(endEvent);
 
         return buffer;
     }

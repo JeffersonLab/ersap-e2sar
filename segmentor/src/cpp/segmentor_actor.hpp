@@ -23,7 +23,7 @@ namespace ersap {
             SegmentorService(SegmentorService&&) = default;
             SegmentorService& operator=(SegmentorService&&) = default;
 
-            ~SegmentorService() override = default;
+            ~SegmentorService();
 
         public:
             ersap::EngineData configure(ersap::EngineData&) override;
