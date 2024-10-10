@@ -28,6 +28,8 @@ namespace ersap {
             std::string ejfatURI = param_tree.get<std::string>("lb-config.ejfatUri", "");
             std::string ipAddress = param_tree.get<std::string>("lb-config.ip", "127.0.0.1");
             u_int16_t listen_port = param_tree.get<u_int16_t>("lb-config.port", 10000);
+            initTimeout = param_tree.get<u_int16_t>("lb-config.initTimoeut", 20000);
+            timeout = param_tree.get<u_int16_t>("lb-config.timeout", 1000);
             std::cout << "EJFAT_URI = " << ejfatURI << std::endl;
             std::cout << "ipAddress = " << ipAddress << std::endl;
             std::cout << "listen_port = " << listen_port << std::endl;
@@ -97,9 +99,9 @@ namespace ersap {
             e2sar::EventNum_t eventNum;
             u_int16_t recDataId;
 
-            uint16_t timeout = 10000;
-            if(event_type)
-                timeout = 1000;
+            uint16_t e2sarTimeout = timeout;
+            if(!event_type)
+                e2sarTimeout = initTimeout;
 
             
             auto recvres = reas->recvEvent(&eventBuf, &eventLen, &eventNum, &recDataId, timeout);

@@ -53,6 +53,8 @@ namespace ersap {
         private:
             void registerWorker(boost::property_tree::ptree);
             std::unique_ptr<e2sar::Reassembler> reas;
+            u_int64_t initTimeout;
+            u_int64_t timeout;
         };
 
     } // end namespace jana
