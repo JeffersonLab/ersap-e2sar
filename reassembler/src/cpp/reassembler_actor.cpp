@@ -31,6 +31,7 @@ namespace ersap {
             u_int16_t listen_port = param_tree.get<u_int16_t>("lb-config.port", 10000);
             initTimeout = param_tree.get<u_int16_t>("lb-config.initTimoeut", 20000);
             timeout = param_tree.get<u_int16_t>("lb-config.timeout", 5000);
+            int threads = param_tree.get<u_int16_t>("lb-config.threads", 4);
             std::cout << "EJFAT_URI = " << ejfatURI << std::endl;
             std::cout << "ipAddress = " << ipAddress << std::endl;
             std::cout << "listen_port = " << listen_port << std::endl;
@@ -39,7 +40,7 @@ namespace ersap {
             if(rflags.useCP){
                 try{
                     boost::asio::ip::address recv_ip = boost::asio::ip::make_address(ipAddress);
-                    reas = std::make_unique<e2sar::Reassembler>(reasUri, recv_ip, listen_port, 4, rflags);
+                    reas = std::make_unique<e2sar::Reassembler>(reasUri, recv_ip, listen_port, threads, rflags);
                     registerWorker(param_tree);
                 }
                 catch(e2sar::E2SARException e){
