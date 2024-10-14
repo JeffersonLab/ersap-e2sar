@@ -14,9 +14,9 @@ services:
 
 configuration:
   io-services:
-    ByteBufferInputService:
+    reader:
       eventSize: 1024 
-      events: 1000
+      events: 100
   services:
     segmentor_actor:
       INI_FILE: config/live/segmentor.ini

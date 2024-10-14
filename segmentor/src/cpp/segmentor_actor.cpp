@@ -6,6 +6,8 @@ namespace ersap {
         {
             // Ersap provides a simple JSON parser to read configuration data
             // and configure the service.
+            
+            eventCount = 0;
             auto config = ersap::stdlib::parse_json(input);
             std::string iniFile;
             u_int16_t dataId = 5555;
@@ -67,6 +69,14 @@ namespace ersap {
 
 
         ersap::EngineData SegmentorService::execute(ersap::EngineData& input) {
+            if(++eventCount % 10 == 0){
+                auto syncStats = seg->getSyncStats();
+                auto sendStats = seg->getSendStats();
+
+                std::cout << "Sent " << syncStats.get<0>() << " sync frames" << std::endl;
+                std::cout << "Sent " << sendStats.get<0>() << " data frames" << std::endl;
+            }
+
             auto output = ersap::EngineData{};
             
             if (input.mime_type() != ersap::type::BYTES) {
@@ -93,24 +103,13 @@ namespace ersap {
             }
 
             auto sendres = seg->addToSendQueue(reinterpret_cast<u_int8_t*>(eventString.data()), eventString.length());
-            sendStats = seg->getSendStats();
-
-            //sleep for a second to allow send.
-            boost::this_thread::sleep_for(boost::chrono::seconds(2));
-
-
-            if (sendStats.get<1>() != 0) 
-            {
-                std::cout << "Error encountered sending event frames: " << strerror(sendStats.get<2>()) << std::endl;
-            }
-
             output.set_data(ersap::type::BYTES, input.data());
             return output;
         }
 
 
         ersap::EngineData SegmentorService::execute_group(const std::vector<ersap::EngineData>& inputs)
-        {
+        {   
             std::vector<std::vector<uint8_t>> byteOutput;
             auto output = ersap::EngineData{};
             for(auto input : inputs){
