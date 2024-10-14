@@ -105,9 +105,7 @@ namespace ersap {
             auto recvres = reas->recvEvent(&eventBuf, &eventLen, &eventNum, &recDataId, e2sarTimeout);
             if (recvres.has_error())
                 std::cout << "Error encountered receiving event frames " << std::endl;
-            if (recvres.value() == -1)
-                std::cout << "No message received, continuing" << std::endl;
-            else{
+            if (recvres.value() != -1){
                 eventCount++;
                 output_events = std::vector<uint8_t>(eventBuf,eventBuf+eventLen);
             }
