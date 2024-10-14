@@ -51,7 +51,7 @@ namespace ersap {
         private:
             void addSender(boost::property_tree::ptree);
             std::unique_ptr<e2sar::Segmenter> seg;
-            int eventCount;
+            std::atomic<int> eventCount;
         };
 
     } // end namespace jana
