@@ -58,7 +58,6 @@ public class FileWriterService extends AbstractEventWriterService<BufferedWriter
     protected void writeEvent(Object event) throws EventWriterException {
         String eventOutput = new String(((ByteBuffer)event).array(), Charset.forName("UTF-8"));
         if(eventOutput.length() > 0){
-            System.out.println("Writing event to file output:" + eventOutput);
             try{
                 writer.write(eventOutput);
                 writer.newLine();

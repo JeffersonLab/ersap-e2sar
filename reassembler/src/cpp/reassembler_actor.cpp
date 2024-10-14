@@ -5,6 +5,7 @@ namespace ersap {
     namespace e2 {
         ersap::EngineData ReassemblerService::configure(ersap::EngineData& input)
         {
+            eventCount = 0;
             // Ersap provides a simple JSON parser to read configuration data
             // and configure the service.
             auto config = ersap::stdlib::parse_json(input);
@@ -29,20 +30,16 @@ namespace ersap {
             std::string ipAddress = param_tree.get<std::string>("lb-config.ip", "127.0.0.1");
             u_int16_t listen_port = param_tree.get<u_int16_t>("lb-config.port", 10000);
             initTimeout = param_tree.get<u_int16_t>("lb-config.initTimoeut", 20000);
-            timeout = param_tree.get<u_int16_t>("lb-config.timeout", 1000);
+            timeout = param_tree.get<u_int16_t>("lb-config.timeout", 5000);
             std::cout << "EJFAT_URI = " << ejfatURI << std::endl;
             std::cout << "ipAddress = " << ipAddress << std::endl;
             std::cout << "listen_port = " << listen_port << std::endl;
 
             e2sar::EjfatURI reasUri(ejfatURI, e2sar::EjfatURI::TokenType::instance);
-
-
-            
-
             if(rflags.useCP){
                 try{
                     boost::asio::ip::address recv_ip = boost::asio::ip::make_address(ipAddress);
-                    reas = std::make_unique<e2sar::Reassembler>(reasUri, recv_ip, listen_port, 1, rflags);
+                    reas = std::make_unique<e2sar::Reassembler>(reasUri, recv_ip, listen_port, 4, rflags);
                     registerWorker(param_tree);
                 }
                 catch(e2sar::E2SARException e){
@@ -110,10 +107,13 @@ namespace ersap {
             if (recvres.value() == -1)
                 std::cout << "No message received, continuing" << std::endl;
             else{
-                std::cout << "Received message: " << reinterpret_cast<char*>(eventBuf) << " of length " << eventLen << " with event number " << eventNum << " and data id " << recDataId << std::endl;
+                eventCount++;
                 output_events = std::vector<uint8_t>(eventBuf,eventBuf+eventLen);
             }
-            
+            if(eventCount % 10 == 0){
+                auto recvStats = reas->getStats();
+                std::cout << "Recevied " << recvStats.get<1>() << " Events" << std::endl;
+            }
             
             output.set_data(ersap::type::BYTES, output_events);
             return output;
@@ -152,7 +152,7 @@ namespace ersap {
 
         std::string ReassemblerService::name() const
         {
-            return "Reassemblee Service";
+            return "Reassembler Service";
         }
 
 
