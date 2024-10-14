@@ -25,9 +25,9 @@ import java.nio.file.Paths;
  * A service that writes images into a ZIP file.
  */
 public class DummyWriterService extends AbstractEventWriterService<BufferedWriter> {
-    int count;
+    AtomicInteger count;
     public DummyWriterService(){
-        count = 0;
+        count = new AtomicInteger(0);
     }
     @Override
     protected BufferedWriter createWriter(Path file, JSONObject opts) throws EventWriterException {
@@ -46,7 +46,7 @@ public class DummyWriterService extends AbstractEventWriterService<BufferedWrite
     @Override
     protected void closeWriter() {
         try {
-            System.out.println("Number of events sent = " + count);
+            System.out.println("Number of events sent = " + count.get());
             writer.close();
         } catch (Exception e) {
             // ignore
@@ -55,7 +55,7 @@ public class DummyWriterService extends AbstractEventWriterService<BufferedWrite
 
     @Override
     protected void writeEvent(Object event) throws EventWriterException {
-        count++;
+        count.incrementAndGet();
     }
 
     @Override
