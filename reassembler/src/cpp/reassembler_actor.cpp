@@ -174,6 +174,11 @@ namespace ersap {
             return "0.1";
         }
 
+        ReassemblerService::~ReassemblerService(){
+            auto recvStats = reas->getStats();
+            std::cout << "Recevied " << recvStats.get<1>() << " Events" << std::endl;
+        }
+
     }
 }
 

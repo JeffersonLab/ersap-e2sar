@@ -25,7 +25,7 @@ namespace ersap {
             ReassemblerService(ReassemblerService&&) = default;
             ReassemblerService& operator=(ReassemblerService&&) = default;
 
-            ~ReassemblerService() override = default;
+            ~ReassemblerService();
 
         public:
             ersap::EngineData configure(ersap::EngineData&) override;
