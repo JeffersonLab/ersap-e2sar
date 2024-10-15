@@ -5,9 +5,6 @@ namespace ersap {
     namespace e2 {
         ersap::EngineData ReassemblerService::configure(ersap::EngineData& input)
         {
-            eventCount = 0;
-            // Ersap provides a simple JSON parser to read configuration data
-            // and configure the service.
             auto config = ersap::stdlib::parse_json(input);
 
             std::string iniFile;
@@ -106,14 +103,8 @@ namespace ersap {
             if (recvres.has_error())
                 std::cout << "Error encountered receiving event frames " << std::endl;
             if (recvres.value() != -1){
-                eventCount++;
                 output_events = std::vector<uint8_t>(eventBuf,eventBuf+eventLen);
             }
-            if(eventCount % 10 == 0){
-                auto recvStats = reas->getStats();
-                std::cout << "Recevied " << recvStats.get<1>() << " Events" << std::endl;
-            }
-            
             output.set_data(ersap::type::BYTES, output_events);
             return output;
         }
@@ -121,7 +112,6 @@ namespace ersap {
 
         ersap::EngineData ReassemblerService::execute_group(const std::vector<ersap::EngineData>& inputs)
         {
-
             auto output = ersap::EngineData{};
             output.set_data(ersap::type::BYTES, inputs.data());
             return output;
@@ -129,16 +119,12 @@ namespace ersap {
 
         std::vector<ersap::EngineDataType> ReassemblerService::input_data_types() const
         {
-            // TODO: Need to understand
-            // return { ersap::type::JSON, ersap::type::BYTES };
             return { ersap::type::JSON, ersap::type::SINT32 };
         }
 
 
         std::vector<ersap::EngineDataType> ReassemblerService::output_data_types() const
         {
-            // TODO: Need to understand
-            // return { ersap::type::JSON, ersap::type::BYTES };
             return { ersap::type::JSON, ersap::type::BYTES };
         }
 
@@ -174,7 +160,10 @@ namespace ersap {
 
         ReassemblerService::~ReassemblerService(){
             auto recvStats = reas->getStats();
-            std::cout << "Recevied " << recvStats.get<1>() << " Events" << std::endl;
+            std::cout << "Reassembler " << recvStats.get<0>() << " Lost Events" << std::endl;
+            std::cout << "Reassembler " << recvStats.get<1>() << " Event Success" << std::endl;
+            std::cout << "Reassembler " << recvStats.get<2>() << " grpcErrCnt" << std::endl;
+            std::cout << "Reassembler " << recvStats.get<3>() << " dataErrCnt" << std::endl;
         }
 
     }

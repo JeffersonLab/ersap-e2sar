@@ -31,11 +31,8 @@ public class BufferSizeReaderService extends AbstractEventReaderService<Buffered
     protected BufferedReader createReader(Path file, JSONObject opts) throws EventReaderException {
         try {
             BufferedReader FileReader =  new BufferedReader(new FileReader(file.toFile()));
-            String line;    
-            if((line = FileReader.readLine()) != null){
-                count =  Integer.parseInt(line);//First line of input file is the number of lines. So for this example the bufferSize will be that
-                System.out.println("Count should be = " + count);
-            }
+            count = opts.optInt("events", 1000);//Could read from file but this makes it easier on FABRIC
+            System.out.println("Number of ERSAP Events:" + count);
             return FileReader;
         }
         catch (FileNotFoundException e) {

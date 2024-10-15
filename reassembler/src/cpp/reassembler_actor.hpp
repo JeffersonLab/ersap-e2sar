@@ -51,7 +51,6 @@ namespace ersap {
             std::string version() const override;
 
         private:
-            int eventCount;
             void registerWorker(boost::property_tree::ptree);
             std::unique_ptr<e2sar::Reassembler> reas;
             u_int64_t initTimeout;

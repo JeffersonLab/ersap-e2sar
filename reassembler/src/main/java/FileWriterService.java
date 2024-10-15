@@ -14,6 +14,7 @@ import javax.imageio.ImageWriter;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.FileWriter;
+import java.io.FileOutputStream;
 
 
 import java.io.IOException;
@@ -26,23 +27,18 @@ import java.nio.file.Paths;
 /**
  * A service that writes images into a ZIP file.
  */
-public class FileWriterService extends AbstractEventWriterService<BufferedWriter> {
-
+public class FileWriterService extends AbstractEventWriterService<FileOutputStream> {
     public FileWriterService(){
 
     }
     @Override
-    protected BufferedWriter createWriter(Path file, JSONObject opts) throws EventWriterException {
+    protected FileOutputStream createWriter(Path file, JSONObject opts) throws EventWriterException {
         try {
-            return new BufferedWriter(new FileWriter(file.toFile()));
+            return new FileOutputStream(file.toFile());
         }
         catch (FileNotFoundException e) {
             throw new EventWriterException("Could not create reader", e);
         }
-        catch(IOException e){
-            e.printStackTrace();
-        }
-        return null;
     }
 
     @Override
@@ -56,11 +52,11 @@ public class FileWriterService extends AbstractEventWriterService<BufferedWriter
 
     @Override
     protected void writeEvent(Object event) throws EventWriterException {
-        String eventOutput = new String(((ByteBuffer)event).array(), Charset.forName("UTF-8"));
-        if(eventOutput.length() > 0){
+        byte[] arr = ((ByteBuffer)event).array();
+        if(arr.length > 0){
             try{
-                writer.write(eventOutput);
-                writer.newLine();
+                writer.write(arr);
+                writer.write("\n".getBytes());
             }
             catch(IOException e){
                 e.printStackTrace();
