@@ -21,7 +21,7 @@ public class ByteBufferInputService extends AbstractEventReaderService<BufferedR
 
     int count;
     int eventSize;
-    
+    byte[] startEvent,endEvent;
     ByteBuffer buffer;
     /**
      * Creates a new image reader service.
@@ -31,7 +31,6 @@ public class ByteBufferInputService extends AbstractEventReaderService<BufferedR
         eventSize = 0;
         String startStr = "Start of event ..";
         String endStr = "End of Event.";
-        byte[] startEvent,endEvent;
         startEvent = startStr.getBytes(Charset.forName("UTF-8"));
         endEvent = endStr.getBytes(Charset.forName("UTF-8"));
     }
