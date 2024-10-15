@@ -20,22 +20,27 @@ import java.io.IOException;
 import java.nio.ByteOrder;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-
+import java.nio.ByteBuffer;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.nio.charset.Charset;
 /**
  * A service that writes images into a ZIP file.
  */
 public class DummyWriterService extends AbstractEventWriterService<BufferedWriter> {
+    
     AtomicInteger count;
+
     public DummyWriterService(){
         count = new AtomicInteger(0);
     }
+
     @Override
     protected BufferedWriter createWriter(Path file, JSONObject opts) throws EventWriterException {
         try {
             return new BufferedWriter(new FileWriter(file.toFile()));
         }
         catch (FileNotFoundException e) {
-            throw new EventWriterException("Could not create reader", e);
+            throw new EventWriterException("Could not create writer", e);
         }
         catch(IOException e){
             e.printStackTrace();

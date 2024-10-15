@@ -1,4 +1,6 @@
 #include "segmentor_actor.hpp"
+#include <fstream>
+
 
 namespace ersap {
     namespace e2 {
@@ -6,8 +8,6 @@ namespace ersap {
         {
             // Ersap provides a simple JSON parser to read configuration data
             // and configure the service.
-            
-            eventCount = 0;
             auto config = ersap::stdlib::parse_json(input);
             std::string iniFile;
             u_int16_t dataId = 5555;
@@ -36,6 +36,12 @@ namespace ersap {
             std::cout << "EJFAT_URI = " << ejfatURI << std::endl;
 
             seg = std::make_unique<e2sar::Segmenter>(uri, dataId, eventSrcId, sflags);
+
+            auto res2 = seg->openAndStart();
+
+            if (res2.has_error())
+                std::cout << "Error encountered opening sockets and starting threads: " << res.error().message() << std::endl;
+
             return {};
         }
 
@@ -67,16 +73,12 @@ namespace ersap {
             }
         }
 
+        void freeBuffer(boost::any a) {
+            auto p = boost::any_cast<uint8_t*>(a);
+            delete[] p;
+        }
 
         ersap::EngineData SegmentorService::execute(ersap::EngineData& input) {
-            if(++eventCount % 10 == 0){
-                auto syncStats = seg->getSyncStats();
-                auto sendStats = seg->getSendStats();
-
-                std::cout << "Sent " << syncStats.get<0>() << " sync frames" << std::endl;
-                std::cout << "Sent " << sendStats.get<0>() << " data frames" << std::endl;
-            }
-
             auto output = ersap::EngineData{};
             
             if (input.mime_type() != ersap::type::BYTES) {
@@ -85,25 +87,13 @@ namespace ersap {
                 return output;
             }
 
-            auto& event_input = ersap::data_cast<std::vector<std::uint8_t>>(input);
-
-            auto res = seg->openAndStart();
-
-            if (res.has_error())
-                std::cout << "Error encountered opening sockets and starting threads: " << res.error().message() << std::endl;
-            
+            auto& event_input = ersap::data_cast<std::vector<u_int8_t>>(input);
+            uint8_t* byte_arr = new uint8_t[event_input.size()];
+            std::copy(event_input.begin(),event_input.end(),byte_arr);
             std::string eventString(event_input.begin(), event_input.end());
-            //
-            // send one event message per 2 seconds that fits into a single frame using event queue
-            //
-            auto sendStats = seg->getSendStats();
-            if (sendStats.get<1>() != 0) 
-            {
-                std::cout << "Error encountered after opening send socket: " << strerror(sendStats.get<2>()) << std::endl;
-            }
-
-            auto sendres = seg->addToSendQueue(reinterpret_cast<u_int8_t*>(eventString.data()), eventString.length());
+            auto sendres = seg->addToSendQueue(byte_arr, event_input.size(),0LL,0,0,&freeBuffer,byte_arr);//0 is default
             output.set_data(ersap::type::BYTES, input.data());
+
             return output;
         }
 
@@ -122,16 +112,12 @@ namespace ersap {
 
         std::vector<ersap::EngineDataType> SegmentorService::input_data_types() const
         {
-            // TODO: Need to understand
-            // return { ersap::type::JSON, ersap::type::BYTES };
             return { ersap::type::JSON, ersap::type::BYTES };
         }
 
 
         std::vector<ersap::EngineDataType> SegmentorService::output_data_types() const
         {
-            // TODO: Need to understand
-            // return { ersap::type::JSON, ersap::type::BYTES };
             return { ersap::type::JSON, ersap::type::BYTES };
         }
 

@@ -21,8 +21,8 @@ public class ByteBufferInputService extends AbstractEventReaderService<BufferedR
 
     int count;
     int eventSize;
-    byte[] startEvent;
-    byte[] endEvent;
+    
+    ByteBuffer buffer;
     /**
      * Creates a new image reader service.
      */
@@ -31,6 +31,7 @@ public class ByteBufferInputService extends AbstractEventReaderService<BufferedR
         eventSize = 0;
         String startStr = "Start of event ..";
         String endStr = "End of Event.";
+        byte[] startEvent,endEvent;
         startEvent = startStr.getBytes(Charset.forName("UTF-8"));
         endEvent = endStr.getBytes(Charset.forName("UTF-8"));
     }
@@ -41,6 +42,11 @@ public class ByteBufferInputService extends AbstractEventReaderService<BufferedR
             BufferedReader fileReader = new BufferedReader(new FileReader(file.toFile()));
             count = opts.optInt("events", 1000);
             eventSize = opts.optInt("eventSize", 1024);
+            buffer = ByteBuffer.allocate(eventSize);
+            buffer.position(0);
+            buffer.put(startEvent);
+            buffer.position(buffer.capacity() - (endEvent.length + 1));
+            buffer.put(endEvent);
             return fileReader;
         }
         catch (FileNotFoundException e) {
@@ -69,12 +75,6 @@ public class ByteBufferInputService extends AbstractEventReaderService<BufferedR
 
     @Override
     protected Object readEvent(int eventNumber) throws EventReaderException {
-        ByteBuffer buffer = ByteBuffer.allocate(eventSize);
-        buffer.position(0);
-        buffer.put(startEvent);
-        buffer.position(buffer.capacity() - (endEvent.length + 1));
-        buffer.put(endEvent);
-
         return buffer;
     }
 
