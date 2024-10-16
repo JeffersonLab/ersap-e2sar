@@ -13,6 +13,9 @@ services:
     lang: cpp
 
 configuration:
+  io-services:
+    reader:
+      events: 2
   services:
     reassembler_actor:
       INI_FILE: config/localhost/reassembler.ini

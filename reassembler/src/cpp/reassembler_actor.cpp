@@ -34,10 +34,11 @@ namespace ersap {
             std::cout << "listen_port = " << listen_port << std::endl;
 
             e2sar::EjfatURI reasUri(ejfatURI, e2sar::EjfatURI::TokenType::instance);
+
+            boost::asio::ip::address recv_ip = boost::asio::ip::make_address(ipAddress);
+            reas = std::make_unique<e2sar::Reassembler>(reasUri, recv_ip, listen_port, threads, rflags);
             if(rflags.useCP){
                 try{
-                    boost::asio::ip::address recv_ip = boost::asio::ip::make_address(ipAddress);
-                    reas = std::make_unique<e2sar::Reassembler>(reasUri, recv_ip, listen_port, threads, rflags);
                     registerWorker(param_tree);
                 }
                 catch(e2sar::E2SARException e){
