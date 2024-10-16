@@ -104,6 +104,7 @@ namespace ersap {
                 std::cout << "Error encountered receiving event frames " << std::endl;
             if (recvres.value() != -1){
                 output_events = std::vector<uint8_t>(eventBuf,eventBuf+eventLen);
+                delete[] eventBuf;
             }
             output.set_data(ersap::type::BYTES, output_events);
             return output;
