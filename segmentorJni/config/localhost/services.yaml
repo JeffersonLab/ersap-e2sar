@@ -1,0 +1,29 @@
+---
+io-services:
+  reader:
+    class: FileReaderService
+    name: FileReaderService
+  writer:
+    class: SegmenterService
+    name: SegmenterService
+
+services:
+  - class: DummyEngineService
+    name: DummyEngineService
+
+configuration:
+  io-services:
+    writer:
+      INI_FILE: config/localhost/segmentor.ini
+      EJFAT_URI: 'ejfat://useless@192.168.100.1:9876/lb/1?sync=192.168.0.1:12345&data=127.0.0.1:10000'
+      PREFER_V6: false
+      PREFER_HOST_ADDRESS: true
+      SENDER_IP: 127.0.0.1
+      VALIDATE: false
+      DATA_ID: 5555
+      EVENT_SRC_ID: 7777
+      USE_CP: false # This is duplicated in the INI file. Didn't want to parse INI file in java so I duplicated this feild. 
+      # Need to maintain consistency in the INI file
+
+mime-types:
+  - binary/bytes

@@ -1,0 +1,25 @@
+---
+io-services:
+  reader:
+    class: BufferSizeReaderService
+    name: BufferSizeReaderService
+  writer:
+    class: FileWriterService
+    name: FileWriterService
+
+services:
+  - class: reassembler_actor
+    name: reassembler_actor
+    lang: cpp
+
+configuration:
+  io-services:
+    reader:
+      events: 1000
+  services:
+    reassembler_actor:
+      INI_FILE: config/live/reassembler.ini
+
+mime-types:
+  - binary/bytes
+  - sint32

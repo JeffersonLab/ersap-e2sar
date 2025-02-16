@@ -1,0 +1,7 @@
+set servicesFile config/localhost/services.yaml
+set fileList     config/files.list
+
+set inputDir    input
+set outputDir   output
+set threads     1
+run local
