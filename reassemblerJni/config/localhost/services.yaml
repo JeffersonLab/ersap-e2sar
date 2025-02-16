@@ -1,0 +1,34 @@
+---
+io-services:
+  reader:
+    class: ReassemblerService
+    name: ReassemblerService
+  writer:
+    class: FileWriterService
+    name: FileWriterService
+
+services:
+  - class: DummyEngineService
+    name: DummyEngineService
+
+configuration:
+  io-services:
+    reader:
+      INI_FILE: config/localhost/reassembler.ini
+      EJFAT_URI: ejfat://useless@192.168.100.1:9876/lb/1?sync=192.168.0.1:12345&data=127.0.0.1
+      PREFER_V6: false
+      WORKER_IP: 127.0.0.1
+      WORKER_PORT: 10000
+      HOSTNAME: dummy
+      TIMEOUT: 500
+      REASSEMBLER_THREADS: 1
+      USE_CP: false # This is duplicated from the INI file. Didn't want to parse INI file in java so I duplicated this feild. 
+      # Need to maintain consistency in the INI file
+
+  services:
+    reassembler_actor:
+      INI_FILE: config/localhost/reassembler.ini
+
+mime-types:
+  - binary/bytes
+  - sint32
