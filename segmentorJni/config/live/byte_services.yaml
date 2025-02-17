@@ -4,22 +4,29 @@ io-services:
     class: ByteBufferInputService
     name: ByteBufferInputService
   writer:
-    class: DummyWriterService
-    name: DummyWriterService
+    class: SegmenterService
+    name: SegmenterService
 
 services:
-  - class: segmentor_actor
-    name: segmentor_actor
-    lang: cpp
+  - class: DummyEngineService
+    name: DummyEngineService
 
 configuration:
   io-services:
     reader:
       eventSize: 80000 
       events: 1000
-  services:
-    segmentor_actor:
+    writer:
       INI_FILE: config/live/segmentor.ini
+      EJFAT_URI: ejfats://caf3cc407df4f2d41dbd75a9ca1c6be808c2bff0709be379a370c10ba7f144ac@10.133.10.254:18008/lb/6?sync=10.133.10.254:19010&data=10.133.10.253&data=[2001:400:a300::10]
+      PREFER_V6: false
+      PREFER_HOST_ADDRESS: true
+      SENDER_IP: 10.141.132.254
+      VALIDATE: false
+      DATA_ID: 5555
+      EVENT_SRC_ID: 7777
+      USE_CP: true # This is duplicated in the INI file. Didn't want to parse INI file in java so I duplicated this feild. 
+      # Need to maintain consistency in the INI file
 
 mime-types:
   - binary/bytes
