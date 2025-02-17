@@ -14,7 +14,7 @@ sourceSets {
 }
 
 jar {
-    archiveBaseName = 'ersap-e2sar-reassembler'  // Name of your JAR
+    archiveBaseName = 'ersap-e2sar-jni-reassembler'  // Name of your JAR
     archiveVersion = '1.0.0'           // Version
 }
 

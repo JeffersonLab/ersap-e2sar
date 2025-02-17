@@ -52,7 +52,7 @@ if [[ ${distro} == 'rocky' ]]; then
     sudo dnf -yq --enablerepo=devel update
     sudo dnf -yq --enablerepo=devel install gcc gcc-c++ kernel-devel make
     # libssl-dev libsystemd-dev
-    sudo dnf -yq --enablerepo=devel install python3-pip autoconf cmake libtool pkg-config ninja-build openssl protobuf-compiler gdb git glib2-devel re2-devel libquadmath-devel python39-devel python39
+    sudo dnf -yq --enablerepo=devel install python3-pip autoconf cmake libtool pkg-config ninja-build openssl protobuf-compiler gdb git glib2-devel re2-devel libquadmath-devel python3-devel python3 zeromq-devel wget protobuf-devel java-17-openjdk.x86_64 java-17-openjdk-devel.x86_64
 
     sudo update-alternatives --set python /usr/bin/python3.9
     sudo update-alternatives --set python3 /usr/bin/python3.9

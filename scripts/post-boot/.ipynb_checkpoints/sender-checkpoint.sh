@@ -26,7 +26,7 @@ if [[ ${distro} == 'ubuntu' ]]; then
     # install missing software
     sudo apt-get -yq update
     sudo dpkg -r ufw
-    sudo apt-get -yq install python3-pip build-essential autoconf cmake libtool pkg-config libglib2.0-dev ninja-build openssl libssl-dev libsystemd-dev protobuf-compiler libre2-dev gdb docker.io openjdk-17-jdk libzmq5-dev libprotobuf-dev firewalld
+    sudo apt-get -yq install python3-pip build-essential autoconf cmake libtool pkg-config libglib2.0-dev ninja-build openssl libssl-dev libsystemd-dev protobuf-compiler libre2-dev gdb docker.io openjdk-17-jdk libzmq5-dev libprotobuf-dev firewalld maven
     
     # install meson
     pip3 install --user meson pybind11
@@ -52,7 +52,7 @@ if [[ ${distro} == 'rocky' ]]; then
     sudo dnf -yq --enablerepo=devel update
     sudo dnf -yq --enablerepo=devel install gcc gcc-c++ kernel-devel make
     # libssl-dev libsystemd-dev
-    sudo dnf -yq --enablerepo=devel install python3-pip autoconf cmake libtool pkg-config ninja-build openssl protobuf-compiler gdb git glib2-devel re2-devel libquadmath-devel python39-devel python39
+    sudo dnf -yq --enablerepo=devel install python3-pip autoconf cmake libtool pkg-config ninja-build openssl protobuf-compiler gdb git glib2-devel re2-devel libquadmath-devel python3-devel python3 zeromq-devel wget protobuf-devel java-17-openjdk.x86_64 java-17-openjdk-devel.x86_64
 
     sudo update-alternatives --set python /usr/bin/python3.9
     sudo update-alternatives --set python3 /usr/bin/python3.9
