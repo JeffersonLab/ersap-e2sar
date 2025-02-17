@@ -34,7 +34,7 @@ public class ReassemblerService extends AbstractEventReaderService<BufferedReade
      * Creates a new image reader service.
      */
     public ReassemblerService() {
-        count = Integer.MAX_VALUE;
+        count = 1000;
         Thread shutdownHook = new Thread(() -> {
             System.out.println("Shutdown hook executed. Performing cleanup...");
             ReassemblerService.runinng = false;
@@ -65,6 +65,7 @@ public class ReassemblerService extends AbstractEventReaderService<BufferedReade
             System.out.println("WORKER_IP= " + workerIp);
             System.out.println("WORKER_PORT= " + listenPort);
             System.out.println("PREFER_V6= " + preferV6);
+            System.out.println("REASSEMBLER_THREADS= " + threads);
 
             EjfatURI dpUri = EjfatURI.createInstance(stringUri, EjfatURI.Token.INSTANCE, preferV6);
             reassembler = new Reassembler(dpUri, InetAddress.getByName(workerIp), listenPort, threads, iniFile);
@@ -89,6 +90,7 @@ public class ReassemblerService extends AbstractEventReaderService<BufferedReade
     void registerWorker(String hostName)throws EventReaderException{
         try {
             reassembler.registerWorker(hostName);
+            System.out.println("Registered Worker");
         } catch (E2sarNativeException e) {
             throw new EventReaderException("Could not registerWorker", e);
         }
@@ -126,8 +128,6 @@ public class ReassemblerService extends AbstractEventReaderService<BufferedReade
             return ByteBuffer.allocateDirect(1);
         }
         ReassembledEvent event = reassembledEvent.get();
-        System.out.println("Recevied event");
-        System.out.println("EventBuffer size" + event.byteBuffer.capacity());
         ByteBuffer cloneBuffer = ByteBuffer.allocate(event.byteBuffer.capacity());
         cloneBuffer.put(event.byteBuffer);
         cloneBuffer.flip();

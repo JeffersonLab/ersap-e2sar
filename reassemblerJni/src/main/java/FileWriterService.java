@@ -28,8 +28,9 @@ import java.nio.file.Paths;
  * A service that writes images into a ZIP file.
  */
 public class FileWriterService extends AbstractEventWriterService<FileOutputStream> {
+    int count;
     public FileWriterService(){
-
+        count = 0;
     }
     @Override
     protected FileOutputStream createWriter(Path file, JSONObject opts) throws EventWriterException {
@@ -48,10 +49,12 @@ public class FileWriterService extends AbstractEventWriterService<FileOutputStre
         } catch (Exception e) {
             // ignore
         }
+        System.out.println("Total number of events: " + count);
     }
 
     @Override
     protected void writeEvent(Object event) throws EventWriterException {
+        count++;
         ByteBuffer buffer = (ByteBuffer) event;
         while(buffer.hasRemaining()){
             try{

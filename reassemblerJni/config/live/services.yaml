@@ -1,21 +1,29 @@
 ---
 io-services:
   reader:
-    class: BufferSizeReaderService
-    name: BufferSizeReaderService
+    class: ReassemblerService
+    name: ReassemblerService
   writer:
     class: FileWriterService
     name: FileWriterService
 
 services:
-  - class: reassembler_actor
-    name: reassembler_actor
-    lang: cpp
+  - class: DummyEngineService
+    name: DummyEngineService
 
 configuration:
   io-services:
     reader:
-      events: 1000
+      INI_FILE: config/live/reassembler.ini
+      EJFAT_URI: 'ejfats://caf3cc407df4f2d41dbd75a9ca1c6be808c2bff0709be379a370c10ba7f144ac@10.133.10.254:18008/lb/6?sync=10.133.10.254:19010&data=10.133.10.253&data=[2001:400:a300::10]'
+      PREFER_V6: false
+      WORKER_IP: 10.141.132.253
+      WORKER_PORT: 10000
+      HOSTNAME: Worker1SRI
+      TIMEOUT: 500
+      REASSEMBLER_THREADS: 1
+      USE_CP: true # This is duplicated from the INI file. Didn't want to parse INI file in java so I duplicated this feild. 
+      # Need to maintain consistency in the INI file
   services:
     reassembler_actor:
       INI_FILE: config/live/reassembler.ini
