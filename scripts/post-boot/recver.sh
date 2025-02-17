@@ -26,7 +26,11 @@ if [[ ${distro} == 'ubuntu' ]]; then
     # install missing software
     sudo apt-get -yq update
     sudo dpkg -r ufw
-    sudo apt-get -yq install python3-pip build-essential autoconf cmake libtool pkg-config libglib2.0-dev ninja-build openssl libssl-dev libsystemd-dev protobuf-compiler libre2-dev gdb docker.io openjdk-17-jdk libzmq5-dev libprotobuf-dev firewalld
+    sudo apt-get -yq install python3-pip build-essential autoconf cmake libtool pkg-config libglib2.0-dev ninja-build openssl libssl-dev libsystemd-dev protobuf-compiler libre2-dev gdb docker.io openjdk-17-jdk libzmq5-dev libprotobuf-dev firewalld maven
+    sudo add-apt-repository ppa:rmescandon/yq
+    sudo apt update
+    sudo apt install yq -y
+
     
     # install meson
     pip3 install --user meson pybind11
