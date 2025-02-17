@@ -61,7 +61,7 @@ public class SegmenterService extends AbstractEventWriterService<BufferedWriter>
             int dataId = opts.optInt("DATA_ID", 5555);
             long eventSrcId = opts.optLong("EVENT_SRC_ID", 7777);
 
-            EjfatURI ejfatURI = EjfatURI.createInstance(stringUri, EjfatURI.Token.INSTANCE, preferV6);
+            EjfatURI ejfatURI = new EjfatURI(stringUri, EjfatURI.Token.INSTANCE, preferV6);
             System.out.println("EJFAT_URI= " + stringUri);
             System.out.println("senderIp= " + senderIp);
             System.out.println("validate= " + validate);

@@ -67,7 +67,7 @@ public class ReassemblerService extends AbstractEventReaderService<BufferedReade
             System.out.println("PREFER_V6= " + preferV6);
             System.out.println("REASSEMBLER_THREADS= " + threads);
 
-            EjfatURI dpUri = EjfatURI.createInstance(stringUri, EjfatURI.Token.INSTANCE, preferV6);
+            EjfatURI dpUri = new EjfatURI(stringUri, EjfatURI.Token.INSTANCE, preferV6);
             reassembler = new Reassembler(dpUri, InetAddress.getByName(workerIp), listenPort, threads, iniFile);
             dpUri.free();
             if(useCp){
