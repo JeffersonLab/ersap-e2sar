@@ -25,7 +25,7 @@ There are two pipelines `segmentor` and `reassembler` which have the following a
 * Reassembler
     * JAVA Actors:
         * `BufferSizeReaderService`(Java source actor) - This actor simply gets the number of events from the services.yaml file. It outputs 0 as the first event and all remaining events are 1. 0 is used as a prestart condition for setting up reassembler wait times.
-        * FileWriterService(Java sink actor) - This actor writes events to a file.
+        * `FileWriterService`(Java sink actor) - This actor writes events to a file.
     * C++ Actors:
         * `reassembler_actor`(CPP E2SAR actor) - This builds the reassembler object which will reassemble the events and send sync messages to the control plane. In the configure(), this actor will register itself with the loadbalancer (if Control plane is used). The configuration for the reassembler is sepcified in INI files and the path needs to be specified in the services.yaml. See [reassembler.ini](reassembler/config/live/segmentor.ini) and [services.yaml](reassembler/config/live/services.yaml)
 
