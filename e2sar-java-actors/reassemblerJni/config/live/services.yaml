@@ -24,9 +24,6 @@ configuration:
       REASSEMBLER_THREADS: 1
       USE_CP: true # This is duplicated from the INI file. Didn't want to parse INI file in java so I duplicated this feild. 
       # Need to maintain consistency in the INI file
-  services:
-    reassembler_actor:
-      INI_FILE: config/live/reassembler.ini
 
 mime-types:
   - binary/bytes

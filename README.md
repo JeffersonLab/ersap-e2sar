@@ -1,11 +1,18 @@
 # ersap-e2sar
 
-This project creates Java and CPP E2SAR actors for [ERSAP](https://github.com/JeffersonLab/ersap-java/tree/main)
+This project creates Java and CPP E2SAR actors for [ERSAP](https://github.com/JeffersonLab/ersap-java/tree/main). Pipelines are implemented in the subdirectories [e2sar-actors](e2sar-actors) and [e2sar-java-actors](e2sar-java-actors/). Both of these subdirectories contain a segmenter and reassembler pipeline. The difference between these two are as follows
+
+1. [e2sar-actors](e2sar-actors) - These are pipelines where the [E2SAR](https://github.com/JeffersonLab/E2SAR) actors are written in C++ and source/sink actors are written in Java. 
+2. [e2sar-java-actors](e2sar-java-actors/) - These are pipelines where [E2SAR-JAVA](https://github.com/JeffersonLab/e2sar-java) is used for segmentation and reassembly. This is a pure java pipeline where E2SAR-JAVA uses JNI to link with E2SAR native code. 
+
+The requirements and build process for the pipelines do differ so they are described in the subdirectories. 
+
+There also [Jupyter notebooks](scripts/) which run on FABRIC that show examples of using and running both sets of pipelines
 
 ## Prerequisites
 
 * Set ERSAP_HOME environment variable which will be used to install the ERSAP environment and the actors in this project
-* Download and install [ersap-java](https://github.com/JeffersonLab/ersap-java/tree/main) [ersap-cpp](https://github.com/JeffersonLab/ersap-java/tree/main) and the corresponding dependencies of the respective projects
+* Download and install [ersap-java](https://github.com/JeffersonLab/ersap-java/tree/main) [ersap-cpp](https://github.com/JeffersonLab/ersap-cpp/tree/main) and the corresponding dependencies of the respective projects
 * Download and install e2sar debian package from [e2sar-releases](https://github.com/JeffersonLab/E2SAR/releases). This contains all necessary dependencies for E2SAR
 
 ## Description of actors

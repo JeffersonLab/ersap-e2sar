@@ -5,10 +5,20 @@
 *.o
 *.so
 
-segmentor/bin/*
-segmentor/.gradle/*
-segmentor/build/*
+e2sar-actors/segmentor/bin/*
+e2sar-actors/segmentor/.gradle/*
+e2sar-actors/segmentor/build/*
 
-reassembler/bin/*
-reassembler/.gradle/*
-reassembler/build/*
+e2sar-actors/reassembler/bin/*
+e2sar-actors/reassembler/.gradle/*
+e2sar-actors/reassembler/build/*
+e2sar-actors/reassembler/output/*
+
+e2sar-java-actors/segmentorJni/bin/*
+e2sar-java-actors/segmentorJni/.gradle/*
+e2sar-java-actors/segmentorJni/build/*
+
+e2sar-java-actors/reassemblerJni/bin/*
+e2sar-java-actors/reassemblerJni/.gradle/*
+e2sar-java-actors/reassemblerJni/build/*
+e2sar-java-actors/reassemblerJni/output/*

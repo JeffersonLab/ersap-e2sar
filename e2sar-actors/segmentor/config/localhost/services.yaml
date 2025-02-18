@@ -13,10 +13,6 @@ services:
     lang: cpp
 
 configuration:
-  io-services:
-    reader:
-      eventSize: 80000 
-      events: 1000
   services:
     segmentor_actor:
       INI_FILE: config/localhost/segmentor.ini
