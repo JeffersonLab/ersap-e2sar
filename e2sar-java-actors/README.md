@@ -64,6 +64,8 @@ The config for segmentation/reassembly is specified in `ini` files
 
 The `USE_CP` flag is duplicated from the ini files. This is needed so that the Java code know if it should contact the LB to register senders/workers. Keep this flag consistent with the INI file.
 
+Since this uses E2SAR-JAVA which has a JNI shared object, our java actors must be able to link with it. You need to set `-Djava.library.path=/path/to/install/directory` in the ERSAP shell using `set javaOptions` or set it in the `.ersap` files in config
+
 
 ## Running the pipelines
 
