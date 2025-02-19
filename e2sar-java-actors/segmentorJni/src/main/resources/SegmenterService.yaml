@@ -1,5 +1,5 @@
 name: SegmenterService
-engine: SegmenterService
+engine: org.jlab.ersap.e2sar_java.SegmenterService
 type: java
 
 author: Srinivas Sivakumar

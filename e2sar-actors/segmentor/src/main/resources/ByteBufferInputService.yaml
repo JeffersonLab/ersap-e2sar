@@ -1,5 +1,5 @@
 name: ByteBufferInputService
-engine: ByteBufferInputService
+engine: org.jlab.ersap.e2sar.ByteBufferInputService
 type: java
 
 author: Srinivas Sivakumar

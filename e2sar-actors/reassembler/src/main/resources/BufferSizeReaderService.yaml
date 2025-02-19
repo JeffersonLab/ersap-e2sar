@@ -1,5 +1,5 @@
 name: DummyReaderService
-engine: DummyReaderService
+engine: org.jlab.ersap.e2sar.DummyReaderService
 type: java
 
 author: Srinivas Sivakumar

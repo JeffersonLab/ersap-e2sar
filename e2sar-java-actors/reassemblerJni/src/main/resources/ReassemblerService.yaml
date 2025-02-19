@@ -1,5 +1,5 @@
 name: ReassemblerService
-engine: ReassemblerService
+engine: org.jlab.ersap.e2sar_java.ReassemblerService
 type: java
 
 author: Srinivas Sivakumar

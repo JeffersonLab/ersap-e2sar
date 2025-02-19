@@ -1,5 +1,5 @@
 name: DummyWriterService
-engine: DummyWriterService
+engine: org.jlab.ersap.e2sar.DummyWriterService
 type: java
 
 author: Srinivas Sivakumar

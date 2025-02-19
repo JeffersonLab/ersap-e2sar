@@ -1,3 +1,5 @@
+package org.jlab.ersap.e2sar;
+
 import org.jlab.epsci.ersap.engine.EngineData;
 import org.jlab.epsci.ersap.engine.EngineDataType;
 import org.jlab.epsci.ersap.std.services.AbstractEventWriterService;
@@ -14,44 +16,36 @@ import javax.imageio.ImageWriter;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.FileWriter;
+import java.io.FileOutputStream;
 
 
 import java.io.IOException;
+import java.nio.charset.Charset;
 import java.nio.ByteOrder;
+import java.nio.ByteBuffer;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.nio.ByteBuffer;
-import java.util.concurrent.atomic.AtomicInteger;
-import java.nio.charset.Charset;
+
 /**
  * A service that writes images into a ZIP file.
  */
-public class DummyWriterService extends AbstractEventWriterService<BufferedWriter> {
-    
-    AtomicInteger count;
+public class FileWriterService extends AbstractEventWriterService<FileOutputStream> {
+    public FileWriterService(){
 
-    public DummyWriterService(){
-        count = new AtomicInteger(0);
     }
-
     @Override
-    protected BufferedWriter createWriter(Path file, JSONObject opts) throws EventWriterException {
+    protected FileOutputStream createWriter(Path file, JSONObject opts) throws EventWriterException {
         try {
-            return new BufferedWriter(new FileWriter(file.toFile()));
+            return new FileOutputStream(file.toFile());
         }
         catch (FileNotFoundException e) {
-            throw new EventWriterException("Could not create writer", e);
+            throw new EventWriterException("Could not create reader", e);
         }
-        catch(IOException e){
-            e.printStackTrace();
-        }
-        return null;
     }
 
     @Override
     protected void closeWriter() {
         try {
-            System.out.println("Number of events sent = " + count.get());
             writer.close();
         } catch (Exception e) {
             // ignore
@@ -60,7 +54,16 @@ public class DummyWriterService extends AbstractEventWriterService<BufferedWrite
 
     @Override
     protected void writeEvent(Object event) throws EventWriterException {
-        count.incrementAndGet();
+        byte[] arr = ((ByteBuffer)event).array();
+        if(arr.length > 0){
+            try{
+                writer.write(arr);
+                writer.write("\n".getBytes());
+            }
+            catch(IOException e){
+                e.printStackTrace();
+            }
+        }
     }
 
     @Override

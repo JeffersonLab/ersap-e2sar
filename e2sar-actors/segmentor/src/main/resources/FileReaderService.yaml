@@ -1,5 +1,5 @@
 name: FileReaderService
-engine: FileReaderService
+engine: org.jlab.ersap.e2sar.FileReaderService
 type: java
 
 author: Srinivas Sivakumar

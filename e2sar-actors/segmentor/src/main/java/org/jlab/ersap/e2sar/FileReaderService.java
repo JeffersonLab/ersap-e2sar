@@ -1,3 +1,5 @@
+package org.jlab.ersap.e2sar;
+
 import org.jlab.epsci.ersap.engine.EngineData;
 import org.jlab.epsci.ersap.engine.EngineDataType;
 import org.jlab.epsci.ersap.std.services.AbstractEventReaderService;
@@ -17,35 +19,29 @@ import java.nio.ByteOrder;
 import java.nio.ByteBuffer;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-public class ByteBufferInputService extends AbstractEventReaderService<BufferedReader> {
+public class FileReaderService extends AbstractEventReaderService<BufferedReader> {
 
     int count;
-    int eventSize;
-    byte[] startEvent,endEvent;
-    ByteBuffer buffer;
     /**
      * Creates a new image reader service.
      */
-    public ByteBufferInputService() {
+    public FileReaderService() {
         count = 0;
-        eventSize = 0;
-        String startStr = "Start of event ..";
-        String endStr = "End of Event.";
-        startEvent = startStr.getBytes(Charset.forName("UTF-8"));
-        endEvent = endStr.getBytes(Charset.forName("UTF-8"));
     }
 
     @Override
     protected BufferedReader createReader(Path file, JSONObject opts) throws EventReaderException {
         try {
             BufferedReader fileReader = new BufferedReader(new FileReader(file.toFile()));
-            count = opts.optInt("events", 1000);
-            eventSize = opts.optInt("eventSize", 1024);
-            buffer = ByteBuffer.allocate(eventSize);
-            buffer.position(0);
-            buffer.put(startEvent);
-            buffer.position(buffer.capacity() - (endEvent.length + 1));
-            buffer.put(endEvent);
+            try{
+                String line;
+                if((line= fileReader.readLine()) != null){
+                    count = Integer.parseInt(line);
+                }
+            }
+            catch (IOException e){
+                throw new EventReaderException("Could not create reader, first input of file should be count of events", e);
+            }
             return fileReader;
         }
         catch (FileNotFoundException e) {
@@ -74,7 +70,16 @@ public class ByteBufferInputService extends AbstractEventReaderService<BufferedR
 
     @Override
     protected Object readEvent(int eventNumber) throws EventReaderException {
-        return buffer;
+        String line;
+        try{
+            if((line = reader.readLine()) != null){
+                return ByteBuffer.wrap(line.getBytes(Charset.forName("UTF-8")));
+            }
+        }
+        catch (IOException e){
+            e.printStackTrace();
+        }
+        return null;
     }
 
     @Override

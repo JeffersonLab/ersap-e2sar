@@ -1,3 +1,5 @@
+package org.jlab.ersap.e2sar_java;
+
 import org.jlab.epsci.ersap.engine.EngineData;
 import org.jlab.epsci.ersap.engine.EngineDataType;
 import org.jlab.epsci.ersap.std.services.AbstractEventWriterService;

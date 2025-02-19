@@ -1,5 +1,5 @@
 name: FileWriterService
-engine: FileWriterService
+engine: org.jlab.ersap.e2sar.FileWriterService
 type: java
 
 author: Srinivas Sivakumar
