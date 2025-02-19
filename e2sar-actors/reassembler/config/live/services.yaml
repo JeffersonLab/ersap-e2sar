@@ -1,10 +1,10 @@
 ---
 io-services:
   reader:
-    class: BufferSizeReaderService
+    class: org.jlab.ersap.e2sar.BufferSizeReaderService
     name: BufferSizeReaderService
   writer:
-    class: FileWriterService
+    class: org.jlab.ersap.e2sar.FileWriterService
     name: FileWriterService
 
 services:

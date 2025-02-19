@@ -1,14 +1,14 @@
 ---
 io-services:
   reader:
-    class: FileReaderService
+    class: org.jlab.ersap.e2sar_java.FileReaderService
     name: FileReaderService
   writer:
-    class: SegmenterService
+    class: org.jlab.ersap.e2sar_java.SegmenterService
     name: SegmenterService
 
 services:
-  - class: DummyEngineService
+  - class: org.jlab.ersap.e2sar_java.DummyEngineService
     name: DummyEngineService
 
 configuration:

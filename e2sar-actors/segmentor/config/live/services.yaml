@@ -1,10 +1,10 @@
 ---
 io-services:
   reader:
-    class: FileReaderService
+    class: org.jlab.ersap.e2sar.FileReaderService
     name: FileReaderService
   writer:
-    class: DummyWriterService
+    class: org.jlab.ersap.e2sar.DummyWriterService
     name: DummyWriterService
 
 services:

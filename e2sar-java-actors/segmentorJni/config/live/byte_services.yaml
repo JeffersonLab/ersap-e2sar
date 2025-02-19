@@ -1,14 +1,14 @@
 ---
 io-services:
   reader:
-    class: ByteBufferInputService
+    class: org.jlab.ersap.e2sar_java.ByteBufferInputService
     name: ByteBufferInputService
   writer:
-    class: SegmenterService
+    class: org.jlab.ersap.e2sar_java.SegmenterService
     name: SegmenterService
 
 services:
-  - class: DummyEngineService
+  - class: org.jlab.ersap.e2sar_java.DummyEngineService
     name: DummyEngineService
 
 configuration:

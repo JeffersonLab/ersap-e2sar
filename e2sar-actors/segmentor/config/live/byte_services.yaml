@@ -1,10 +1,10 @@
 ---
 io-services:
   reader:
-    class: ByteBufferInputService
+    class: org.jlab.ersap.e2sar.ByteBufferInputService
     name: ByteBufferInputService
   writer:
-    class: DummyWriterService
+    class: org.jlab.ersap.e2sar.DummyWriterService
     name: DummyWriterService
 
 services:

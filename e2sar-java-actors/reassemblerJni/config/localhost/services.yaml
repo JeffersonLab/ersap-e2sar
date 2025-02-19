@@ -1,10 +1,10 @@
 ---
 io-services:
   reader:
-    class: ReassemblerService
+    class: org.jlab.ersap.e2sar_java.ReassemblerService
     name: ReassemblerService
   writer:
-    class: FileWriterService
+    class: org.jlab.ersap.e2sar_java.FileWriterService
     name: FileWriterService
 
 services:
