@@ -8,7 +8,7 @@ io-services:
     name: FileWriterService
 
 services:
-  - class: org.jlab.ersap.e2sar.DummyEngineService
+  - class: org.jlab.ersap.e2sar_java.DummyEngineService
     name: DummyEngineService
 
 configuration:
