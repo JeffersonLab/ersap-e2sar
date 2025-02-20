@@ -58,28 +58,20 @@ public class FileWriterService extends AbstractEventWriterService<FileOutputStre
     protected void writeEvent(Object event) throws EventWriterException {
         count++;
         ByteBuffer buffer = (ByteBuffer) event;
+        byte arr[];
         if(buffer.hasArray()){
-            byte[] arr = buffer.array();
-            if(arr.length > 0){
-                try{
-                    writer.write(arr);
-                    writer.write("\n".getBytes());
-                }
-                catch(IOException e){
-                    e.printStackTrace();
-                }
-            }
+            arr = buffer.array();
         }
         else{
+            arr = new byte[buffer.capacity()];
+            int i =0;
             while(buffer.hasRemaining()){
-                try{
-                    writer.write(buffer.get());
-                }
-                catch(IOException e){
-                    e.printStackTrace();
-                }
+                arr[i++] = buffer.get();
             }
+        }
+        if(arr.length > 0){
             try{
+                writer.write(arr);
                 writer.write("\n".getBytes());
             }
             catch(IOException e){
