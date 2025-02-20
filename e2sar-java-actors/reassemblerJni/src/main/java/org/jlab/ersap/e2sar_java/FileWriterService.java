@@ -87,7 +87,6 @@ public class FileWriterService extends AbstractEventWriterService<FileOutputStre
             }
         }
     }
-    }
 
     @Override
     protected EngineDataType getDataType() {
