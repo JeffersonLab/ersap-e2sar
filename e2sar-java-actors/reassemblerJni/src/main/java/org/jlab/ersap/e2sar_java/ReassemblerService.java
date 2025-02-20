@@ -36,7 +36,7 @@ public class ReassemblerService extends AbstractEventReaderService<BufferedReade
      * Creates a new image reader service.
      */
     public ReassemblerService() {
-        count = 1000;
+        count = Integer.MAX_VALUE;
         Thread shutdownHook = new Thread(() -> {
             System.out.println("Shutdown hook executed. Performing cleanup...");
             ReassemblerService.runinng = false;
